@@ -1,5 +1,7 @@
 images/*
 !images/.gitkeep
+!images/UI/imgButton.png
+!images/UI/imgButtonPressed.png
 
 lua_maps/*
 !lua_maps/.gitkeep
