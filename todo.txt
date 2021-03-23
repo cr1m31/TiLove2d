@@ -1,0 +1,10 @@
+-- todo list
+
+--[[  render choosed worlds only
+allow groups for tilesets and objects = done //  except for animated tiles !!
+cleanup memory
+collision tiles = objectgroup key in tileset and id key = id of the tile that matches in data by removing to data, the firstgid of the tileset.
+publish on github
+create readme with features list, collisions, objects...
+git testing
+]]--

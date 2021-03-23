@@ -1,0 +1,11 @@
+images/*
+!images/.gitkeep
+
+lua_maps/*
+!lua_maps/.gitkeep
+
+tiledFiles/*
+!tiledFiles/.gitkeep
+
+worldData/*
+!worldData/.gitkeep
