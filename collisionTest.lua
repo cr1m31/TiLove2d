@@ -34,9 +34,9 @@ function collisionTestT.collisionTilesTester(MAPSNWORLD,worldX, worldY, playerOf
                             
                             if colPosX < screenwidth / 2 then -- test to see when a collider is on the left of the screen or not
                               -- works only with one collision tile !! fror testing purpose
-                              print("left")
+                              --print("left")
                             else
-                              print("right")
+                              --print("right")
                             end
                           end
                         end

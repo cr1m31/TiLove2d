@@ -4,6 +4,8 @@ local UI = {}
 local screenWidthUI = love.graphics.getWidth()
 local screenHeightUI = love.graphics.getHeight()
 
+
+-- BUTTONS ----------------------------------------------------------------------------------
 UI.buttonsMenuList = {}
 
 function UI.createButton(bType)
@@ -62,7 +64,6 @@ function UI.createUiButtonsOnce()
 end
 
 function UI.drawButtons(state)
-  local boxFrame = 1
   for i, j in ipairs(UI.buttonsMenuList) do
     if j.state == state then
       love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
@@ -71,12 +72,49 @@ function UI.drawButtons(state)
   end
 end
 
-function UI.resumeGameMode()
-  
+-- CHECKBOXES ----------------------------------------------------------------------------------
+UI.checkboxList = {}
+
+function UI.createCheckbox(bType, worldNumber)
+  UI.checkbox = {}
+  UI.checkbox.image = love.graphics.newImage("images/UI/imgButton.png")
+  UI.checkbox.imageWidth = UI.checkbox.image:getWidth()
+  UI.checkbox.imageHeight = UI.checkbox.image:getHeight()
+  UI.checkbox.imagePressed = love.graphics.newImage("images/UI/imgButtonPressed.png")
+  UI.checkbox.type = bType
+  ---------------------------------------------------------------------
+  --world menu
+  if bType == "checkboxChooseWorldToDraw" then
+    UI.checkbox.name = "choose World"
+    UI.checkbox.width = 30
+    UI.checkbox.height = 30
+    UI.checkbox.x = (screenWidthUI / 2)
+    UI.checkbox.y = 140 + (worldNumber * 50)
+    UI.checkbox.state = "worldEditMode"
+  end
+  table.insert(UI.checkboxList, UI.checkbox)
+  return UI.checkbox
 end
 
---mouse callback
+function UI.createUiCheckboxOnce(worldAndMapsFromMain)
+  -- world editor checkboxes
+  for worldNum, worldVal in ipairs(worldAndMapsFromMain) do
+    UI.createCheckbox("checkboxChooseWorldToDraw", worldNum)
+  end
+end
+
+function UI.drawCheckboxes(state)
+  for i, j in ipairs(UI.checkboxList) do
+    if j.state == state then
+      love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      love.graphics.print(j.name .. " " .. i, j.x, j.y - (j.height / 2))
+    end
+  end
+end
+
+--mouse callbacks ------------------------------------------------------------------------------
 function UI.mousePressedInUiCall(mousX, mousY, state)
+  -- Buttons pressed ---------------------------------
   for i , UIObjects in ipairs(UI.buttonsMenuList) do
     if mousX < UIObjects.x + UIObjects.width and
     mousX > UIObjects.x and
@@ -94,6 +132,20 @@ function UI.mousePressedInUiCall(mousX, mousY, state)
       elseif state == "worldEditMode" then
         if UIObjects.type == "reloadLove2d" then
           return UIObjects.type
+        end
+      end
+    end
+  end
+  -- Checkboxes under mouse --------------------------------
+  for i , UICheckObject in ipairs(UI.checkboxList) do
+    if mousX < UICheckObject.x + UICheckObject.width and
+    mousX > UICheckObject.x and
+    mousY < UICheckObject.y + UICheckObject.height and
+    mousY > UICheckObject.y 
+    then
+      if state == "worldEditMode" then
+        if UICheckObject.type == "checkboxChooseWorldToDraw" then
+          return UICheckObject.type
         end
       end
     end

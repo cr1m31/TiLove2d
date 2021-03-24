@@ -7,7 +7,7 @@ local screenHeight = love.graphics.getHeight()
 local defaultFont = love.graphics.newFont()
 local bigFont = love.graphics.newFont(32)
 
-local uiButtonsTable = require("UI") --enable ui buttons
+local uiButtonsTable = nil
 local worldFileSearchMod = require("worldFileSearch") --search for world files (very first thing to check)
 
 local worldModuleCall = nil
@@ -77,11 +77,15 @@ function prepareTiledToLoveAndInjectWorldDataIntoMapFiles()
 end
 
 function love.load() 
+  uiButtonsTable = require("UI") --enable ui buttons
+  -- create buttons
   uiButtonsTable.createUiButtonsOnce()
   worldFileSearchMod.createWorldDirectoryIfNil()
   worldFileSearchMod.loadFileBrowser()
   importWorldNamesInMain()
   prepareTiledToLoveAndInjectWorldDataIntoMapFiles() -- is requiring tiledToLove too.
+  -- create checkboxes once world data is loaded
+  uiButtonsTable.createUiCheckboxOnce(MAPSFROMWORLDTOMAIN) -- argument = count world and maps to check
   -- import quads and imagelist from tiledToLove
   local quadsImportFromTiled, imageListFromTiled = tiledToLoveMod.exportQuadsAndImageListFromTiledToMain()
   tiledToLoveMod.declareAnimTimer()
@@ -130,7 +134,11 @@ function love.draw()
   elseif mainState.state == stateMachine.menuMode then
   end
   
-  uiButtonsTable.drawButtons(mainState.state)
+  -- draw buttons
+  uiButtonsTable.drawButtons(mainState.state) 
+  -- draw checkboxes
+  uiButtonsTable.drawCheckboxes(mainState.state)
+  
   love.graphics.setColor(1,1,0)
   love.graphics.print(mainState.state, screenWidth/ 1.2, 20)
   love.graphics.setColor(1,1,1)  
@@ -158,9 +166,14 @@ function love.mousepressed(x, y, MouseButton, istouch)
     if mainState.state == stateMachine.gameMode then
       uiButtonsTable.mousePressedInUiCall(x, y, mainState.state)
     elseif mainState.state == stateMachine.worldEditMode then
+      -- world edit button restart
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "reloadLove2d" then
         love.event.quit( "restart" )
+      -- world edit checkboxes
+      elseif uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "checkboxChooseWorldToDraw" then
+        print("choose World in main")
       end
+      
     elseif mainState.state == stateMachine.menuMode then
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "buttonResumeGame" then
         mainState.state = stateMachine.gameMode
