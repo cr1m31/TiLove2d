@@ -78,14 +78,13 @@ end
 
 function love.load() 
   uiButtonsTable = require("UI") --enable ui buttons
-  -- create buttons
-  uiButtonsTable.createUiButtonsOnce()
+  
   worldFileSearchMod.createWorldDirectoryIfNil()
   worldFileSearchMod.loadFileBrowser()
   importWorldNamesInMain()
   prepareTiledToLoveAndInjectWorldDataIntoMapFiles() -- is requiring tiledToLove too.
-  -- create checkboxes once world data is loaded
-  uiButtonsTable.createUiCheckboxOnce(MAPSFROMWORLDTOMAIN) -- argument = count world and maps to check
+  -- create buttons
+  uiButtonsTable.createUiButtonsOnce(MAPSFROMWORLDTOMAIN) -- after world is loaded
   -- import quads and imagelist from tiledToLove
   local quadsImportFromTiled, imageListFromTiled = tiledToLoveMod.exportQuadsAndImageListFromTiledToMain()
   tiledToLoveMod.declareAnimTimer()
@@ -136,9 +135,7 @@ function love.draw()
   
   -- draw buttons
   uiButtonsTable.drawButtons(mainState.state) 
-  -- draw checkboxes
-  uiButtonsTable.drawCheckboxes(mainState.state)
-  
+
   love.graphics.setColor(1,1,0)
   love.graphics.print(mainState.state, screenWidth/ 1.2, 20)
   love.graphics.setColor(1,1,1)  
