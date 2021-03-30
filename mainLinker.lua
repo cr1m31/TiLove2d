@@ -138,8 +138,10 @@ function love.draw()
   
   -- draw buttons
   uiButtonsTable.drawButtons(mainState.state) 
-  -- draw buttons for each world and maps
-  uiButtonsTable.drawButtonsForEachWorld(mainState.state, CHOOSEWORLD)
+  -- draw buttons for each world
+  uiButtonsTable.drawButtonsForEachWorld(mainState.state)
+  
+  uiButtonsTable.drawButtonsForEachMap(mainState.state)
   
   love.graphics.setColor(1,1,0)
   love.graphics.print(mainState.state, screenWidth/ 1.2, 20)

@@ -71,7 +71,7 @@ end
         else
           for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].tilesets) do
             if tilesetVal.imageheight == nil then
-              print("image tsx file is missing for tileset " .. tileKey)
+              print("please embed tilesets in Tiled map editor" .. tileKey)
             else
               for y = 0 , tilesetVal.imageheight / tilesetVal.tileheight - 1 do
                 for x = 0 , tilesetVal.imagewidth / tilesetVal.tilewidth - 1 do
@@ -104,7 +104,7 @@ end
         else
           for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].tilesets) do
             if tilesetVal.tiles == nil then
-              print("image tsx file is missing for tileset " .. tileKey)
+              print("please embed tilesets in Tiled map editor " .. tileKey)
             else
               for tileNum, tileVal in ipairs(tilesetVal.tiles) do
                 if tileVal.animation == nil then
