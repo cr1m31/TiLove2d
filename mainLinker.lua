@@ -38,6 +38,7 @@ mainState.state = stateMachine.worldEditMode
 local MAPSFROMWORLDTOMAIN = {}
 local worldNamesImport = {}
 local CHOOSEWORLD = nil
+local CHOOSEMAP = nil
 
 function importWorldNamesInMain()
   worldNamesImport = worldFileSearchMod.returnWorldNames()
@@ -63,6 +64,7 @@ function prepareTiledToLoveAndInjectWorldDataIntoMapFiles()
           MAPSFROMWORLDTOMAIN[n][l].worldNumber = n
           MAPSFROMWORLDTOMAIN[n][l].worldName = o
           MAPSFROMWORLDTOMAIN[n][l].mapNumber = l
+          MAPSFROMWORLDTOMAIN[n][l].mapName = m.fileName
           MAPSFROMWORLDTOMAIN[n][l].mapOnWorldPosX = m.x -- injects the world x coordinates into the tiled map
           MAPSFROMWORLDTOMAIN[n][l].mapOnWorldPosY = m.y
         else 
@@ -126,7 +128,7 @@ function love.draw()
   if mainState.state == stateMachine.gameMode then
     --tiledToLoveMod.drawLayerDataIndexes(fakeWorldX, fakeWorldY)
     love.graphics.scale(1, 1)  
-    tiledToLoveMod.drawTiled(CHOOSEWORLD, fakeWorldX, fakeWorldY, playerOffsetX, playerOffsetY)
+    tiledToLoveMod.drawTiled(CHOOSEWORLD, CHOOSEMAP, fakeWorldX, fakeWorldY, playerOffsetX, playerOffsetY)
     love.graphics.scale(1, 1)
   elseif mainState.state == stateMachine.worldEditMode then
     worldFileSearchMod.drawFileBrowserResults()
@@ -136,9 +138,9 @@ function love.draw()
   
   -- draw buttons
   uiButtonsTable.drawButtons(mainState.state) 
-  -- draw buttons for each world
-  uiButtonsTable.drawButtonsForEachWorld(mainState.state)
-
+  -- draw buttons for each world and maps
+  uiButtonsTable.drawButtonsForEachWorld(mainState.state, CHOOSEWORLD)
+  
   love.graphics.setColor(1,1,0)
   love.graphics.print(mainState.state, screenWidth/ 1.2, 20)
   love.graphics.setColor(1,1,1)  
@@ -174,6 +176,10 @@ function love.mousepressed(x, y, MouseButton, istouch)
         local worldButtonType, worldButtonNum = uiButtonsTable.mousePressedInUiCall(x, y, mainState.state)
         print("choose World in main", worldButtonNum)
         CHOOSEWORLD = worldButtonNum -- set the world to draw as the button choosed in wordl editor inside UI module.
+      elseif uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "checkboxChooseMapToDraw" then
+        local mapButtonType, mapButtonNum = uiButtonsTable.mousePressedInUiCall(x, y, mainState.state)
+        print("choose map in main", mapButtonNum)
+        CHOOSEMAP = mapButtonNum -- set the map to draw as the button choosed in wordl editor inside UI module.
       end
     elseif mainState.state == stateMachine.menuMode then
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "buttonResumeGame" then
