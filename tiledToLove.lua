@@ -263,32 +263,37 @@ function drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, wor
   end
 end
 
-function tiledToLoveT.drawTiled(worldX, worldY, playerOffsetX, playerOffsetY)
+function tiledToLoveT.drawTiled(chooseWorld, worldX, worldY, playerOffsetX, playerOffsetY)
   for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do   
     for mapsKey, mapsVal in pairs(TILESETSIMPORTEDFROMMAIN[worldKey]) do
-      -- check if tiled image tsx is missing for the tileset
-      for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].tilesets) do
-        if tilesetVal.tiles == nil then
-          love.graphics.setColor(1,0,0)
-          love.graphics.print("image tsx file is missing for tileset " .. tileKey .. " !", screenWidth / 3, screenHeight / 2)
-          love.graphics.setColor(1,1,1)
-        end
-      end
-      -- end of tsx image check
-      for layersKey = 1, #TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].layers , 1 do
-        local layerValue = TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].layers[layersKey]
-        if layerValue.type == "group" then
-          for subLayerI, subLayerVal in ipairs(layerValue.layers) do
-            love.graphics.setColor(1,0.4,0.4)
-            -- draw tiles or animations in GROUPS (folders)
-            drawGroupFolderLayers(worldX, worldY, playerOffsetX, playerOffsetY, worldKey, mapsKey, layersKey, subLayerVal)
+      if TILESETSIMPORTEDFROMMAIN[chooseWorld] == nil then
+        love.graphics.setColor(1,0,0)
+        love.graphics.print("Please choose a world in the world editor. ", screenWidth / 3, screenHeight / 2)
+        love.graphics.setColor(1,1,1)
+      else
+        for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[chooseWorld][mapsKey].tilesets) do
+          if tilesetVal.tiles == nil then
+            love.graphics.setColor(1,0,0)
+            love.graphics.print("please embedd tilesets in Tiled map editor " .. tileKey .. " !", screenWidth / 3, screenHeight / 2)
             love.graphics.setColor(1,1,1)
           end
-        elseif layerValue.type == "tilelayer"then
-          drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, worldKey, mapsKey, layersKey, layerValue)
-        elseif layerValue.type == "objectgroup" then -- this will select object layers 
-          drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, worldKey, mapsKey, layersKey, layerValue)
-        end  
+        end
+        -- end of tsx image check
+        for layersKey = 1, #TILESETSIMPORTEDFROMMAIN[chooseWorld][mapsKey].layers , 1 do
+          local layerValue = TILESETSIMPORTEDFROMMAIN[chooseWorld][mapsKey].layers[layersKey]
+          if layerValue.type == "group" then
+            for subLayerI, subLayerVal in ipairs(layerValue.layers) do
+              love.graphics.setColor(1,0.4,0.4)
+              -- draw tiles or animations in GROUPS (folders)
+              drawGroupFolderLayers(worldX, worldY, playerOffsetX, playerOffsetY, chooseWorld, mapsKey, layersKey, subLayerVal)
+              love.graphics.setColor(1,1,1)
+            end
+          elseif layerValue.type == "tilelayer"then
+            drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, chooseWorld, mapsKey, layersKey, layerValue)
+          elseif layerValue.type == "objectgroup" then -- this will select object layers 
+            drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, chooseWorld, mapsKey, layersKey, layerValue)
+          end  
+        end
       end
     end
   end

@@ -37,6 +37,7 @@ mainState.state = stateMachine.worldEditMode
 
 local MAPSFROMWORLDTOMAIN = {}
 local worldNamesImport = {}
+local CHOOSEWORLD = nil
 
 function importWorldNamesInMain()
   worldNamesImport = worldFileSearchMod.returnWorldNames()
@@ -125,7 +126,7 @@ function love.draw()
   if mainState.state == stateMachine.gameMode then
     --tiledToLoveMod.drawLayerDataIndexes(fakeWorldX, fakeWorldY)
     love.graphics.scale(1, 1)  
-    tiledToLoveMod.drawTiled(fakeWorldX, fakeWorldY, playerOffsetX, playerOffsetY)
+    tiledToLoveMod.drawTiled(CHOOSEWORLD, fakeWorldX, fakeWorldY, playerOffsetX, playerOffsetY)
     love.graphics.scale(1, 1)
   elseif mainState.state == stateMachine.worldEditMode then
     worldFileSearchMod.drawFileBrowserResults()
@@ -168,17 +169,12 @@ function love.mousepressed(x, y, MouseButton, istouch)
       -- world edit button restart
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "reloadLove2d" then
         love.event.quit( "restart" )
-        
-        
-      -- world edit checkboxes
+      -- world choosing buttons ------------------------------------------------------------------------
       elseif uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "checkboxChooseWorldToDraw" then
         local worldButtonType, worldButtonNum = uiButtonsTable.mousePressedInUiCall(x, y, mainState.state)
         print("choose World in main", worldButtonNum)
+        CHOOSEWORLD = worldButtonNum -- set the world to draw as the button choosed in wordl editor inside UI module.
       end
-      
-      
-      
-      
     elseif mainState.state == stateMachine.menuMode then
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "buttonResumeGame" then
         mainState.state = stateMachine.gameMode
