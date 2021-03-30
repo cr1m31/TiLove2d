@@ -25,16 +25,36 @@ function UI.createButton(bType, w, h, x, y, name, state)
   return UI.buttonsMenu
 end
 
+-- create 
+UI.forEachWorldButtonsList = {}
+
+function UI.createButtonForEachWorld(bType, w, h, x, y, name, state)
+  UI.forEachWorldButtons = {}
+  UI.forEachWorldButtons.image = love.graphics.newImage("images/UI/imgButton.png")
+  UI.forEachWorldButtons.imageWidth = UI.forEachWorldButtons.image:getWidth()
+  UI.forEachWorldButtons.imageHeight = UI.forEachWorldButtons.image:getHeight()
+  UI.forEachWorldButtons.imagePressed = love.graphics.newImage("images/UI/imgButtonPressed.png")
+  UI.forEachWorldButtons.type = bType
+  UI.forEachWorldButtons.width = w
+  UI.forEachWorldButtons.height = h
+  UI.forEachWorldButtons.x = x
+  UI.forEachWorldButtons.y = y
+  UI.forEachWorldButtons.name = name
+  UI.forEachWorldButtons.state = state
+  
+  table.insert(UI.forEachWorldButtonsList, UI.forEachWorldButtons)
+  return UI.forEachWorldButtons
+end
+
 --UI.createButton(button Type, width, height, x pos, y pos, name, game state)
-local worldListNum = {}
+
 function UI.createUiButtonsOnce(worldAndMapsFromMain)
   --worlds menu buttons ----------------------------------------------------------------------------
   UI.createButton("reloadLove2d", 70, 20, screenWidthUI / 3, 150, "Reload game", "worldEditMode")
   -- checkboxes for world selection ------------
   -- world editor checkboxes
   for worldNum, worldVal in ipairs(worldAndMapsFromMain) do -- for each world create a button
-    worldListNum[worldNum] = {}
-    UI.createButton("checkboxChooseWorldToDraw", 30, 30, screenWidthUI / 2, 140 + (worldNum * 50), "Choose world", "worldEditMode")
+    UI.createButtonForEachWorld("checkboxChooseWorldToDraw", 30, 30, screenWidthUI / 2, 140 + (worldNum * 50), "Choose world", "worldEditMode")
     worldAndMapsFromMain = nil
   end
   
@@ -46,6 +66,15 @@ end
 
 function UI.drawButtons(state)
   for i, j in ipairs(UI.buttonsMenuList) do
+    if j.state == state then
+      love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      love.graphics.print(j.name, j.x, j.y - j.height)
+    end
+  end
+end
+
+function UI.drawButtonsForEachWorld(state)
+  for i, j in ipairs(UI.forEachWorldButtonsList) do
     if j.state == state then
       love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
       love.graphics.print(j.name, j.x, j.y - j.height)
@@ -73,8 +102,20 @@ function UI.mousePressedInUiCall(mousX, mousY, state)
       elseif state == "worldEditMode" then
         if UIObjects.type == "reloadLove2d" then
           return UIObjects.type
-        elseif UIObjects.type == "checkboxChooseWorldToDraw" then
-          return UIObjects.type
+        end
+      end
+    end
+  end
+  -- Buttons pressed for each world ---------------------------------
+  for i , UIObjects in ipairs(UI.forEachWorldButtonsList) do
+    if mousX < UIObjects.x + UIObjects.width and
+    mousX > UIObjects.x and
+    mousY < UIObjects.y + UIObjects.height and
+    mousY > UIObjects.y 
+    then
+      if state == "worldEditMode" then
+        if UIObjects.type == "checkboxChooseWorldToDraw" then
+          return UIObjects.type, i
         end
       end
     end

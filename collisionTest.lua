@@ -19,24 +19,27 @@ function collisionTestT.collisionTilesTester(MAPSNWORLD,worldX, worldY, playerOf
               local layerDataIndex = layerValue.data[index]
               if layerDataIndex ~= 0 then 
                 for tileKey, tilesetVal in ipairs(MAPSNWORLD[worldKey][mapsKey].tilesets) do
-                  if layerDataIndex >= tilesetVal.firstgid and 
-                  layerDataIndex <= tilesetVal.firstgid + tilesetVal.tilecount - 1 then 
-                    for tileNum, tileVal in ipairs(tilesetVal.tiles) do
-                      if tileVal.objectGroup == nil then
-                      else
-                        -- collision test
-                        for tileObjectGroupI, tileObjectGroupVal in ipairs(tileVal.objectGroup.objects) do
-                          if tileVal.id + 1 == layerDataIndex then
-                            --love.graphics.rectangle("line", xx + worldX, yy + worldY, tileObjectGroupVal.width, tileObjectGroupVal.height)
-                            --love.graphics.print("img:" .. tilesetVal.name .. "/coll", xx + worldX, yy + worldY - 20)
-                            local colPosX = xx + worldX
-                            local colPosY = yy + worldY
-                            
-                            if colPosX < screenwidth / 2 then -- test to see when a collider is on the left of the screen or not
-                              -- works only with one collision tile !! fror testing purpose
-                              --print("left")
-                            else
-                              --print("right")
+                  if tilesetVal.tilecount == nil then
+                  else
+                    if layerDataIndex >= tilesetVal.firstgid and 
+                    layerDataIndex <= tilesetVal.firstgid + tilesetVal.tilecount - 1 then 
+                      for tileNum, tileVal in ipairs(tilesetVal.tiles) do
+                        if tileVal.objectGroup == nil then
+                        else
+                          -- collision test
+                          for tileObjectGroupI, tileObjectGroupVal in ipairs(tileVal.objectGroup.objects) do
+                            if tileVal.id + 1 == layerDataIndex then
+                              --love.graphics.rectangle("line", xx + worldX, yy + worldY, tileObjectGroupVal.width, tileObjectGroupVal.height)
+                              --love.graphics.print("img:" .. tilesetVal.name .. "/coll", xx + worldX, yy + worldY - 20)
+                              local colPosX = xx + worldX
+                              local colPosY = yy + worldY
+                              
+                              if colPosX < screenwidth / 2 then -- test to see when a collider is on the left of the screen or not
+                                -- works only with one collision tile !! fror testing purpose
+                                --print("left")
+                              else
+                                --print("right")
+                              end
                             end
                           end
                         end

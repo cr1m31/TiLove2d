@@ -135,6 +135,8 @@ function love.draw()
   
   -- draw buttons
   uiButtonsTable.drawButtons(mainState.state) 
+  -- draw buttons for each world
+  uiButtonsTable.drawButtonsForEachWorld(mainState.state)
 
   love.graphics.setColor(1,1,0)
   love.graphics.print(mainState.state, screenWidth/ 1.2, 20)
@@ -166,10 +168,16 @@ function love.mousepressed(x, y, MouseButton, istouch)
       -- world edit button restart
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "reloadLove2d" then
         love.event.quit( "restart" )
+        
+        
       -- world edit checkboxes
       elseif uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "checkboxChooseWorldToDraw" then
-        print("choose World in main")
+        local worldButtonType, worldButtonNum = uiButtonsTable.mousePressedInUiCall(x, y, mainState.state)
+        print("choose World in main", worldButtonNum)
       end
+      
+      
+      
       
     elseif mainState.state == stateMachine.menuMode then
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "buttonResumeGame" then

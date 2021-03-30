@@ -47,9 +47,13 @@ end
         else
           for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].tilesets) do
             local tempImageName = tilesetVal.image
-            tempImageName = string.gsub(tempImageName, "%.%./", "", 1)
-            tilesetVal.image = tempImageName -- apply path changes
-            tilesetsImagesList[worldKey][mapsKey][tileKey].tileImg = love.graphics.newImage(tilesetVal.image)
+            if tempImageName == nil then
+              print("image tsx file is missing for tileset " .. tileKey)
+            else
+              tempImageName = string.gsub(tempImageName, "%.%./", "", 1)
+              tilesetVal.image = tempImageName -- apply path changes
+              tilesetsImagesList[worldKey][mapsKey][tileKey].tileImg = love.graphics.newImage(tilesetVal.image)
+            end
           end
         end
       end
@@ -66,19 +70,23 @@ end
         if TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey] == nil then
         else
           for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].tilesets) do
-            for y = 0 , tilesetVal.imageheight / tilesetVal.tileheight - 1 do
-              for x = 0 , tilesetVal.imagewidth / tilesetVal.tilewidth - 1 do
-                local xx = x * tilesetVal.tilewidth
-                local yy = y * tilesetVal.tileheight
-                index = x + (y * tilesetVal.imagewidth / tilesetVal.tilewidth) + 1
-                table.insert(quadListT[worldKey][mapsKey], love.graphics.newQuad(xx, yy,
-                  tilesetVal.tilewidth, 
-                  tilesetVal.tileheight,
-                  tilesetVal.imagewidth,
-                  tilesetVal.imageheight
-                )) 
-              end
-            end 
+            if tilesetVal.imageheight == nil then
+              print("image tsx file is missing for tileset " .. tileKey)
+            else
+              for y = 0 , tilesetVal.imageheight / tilesetVal.tileheight - 1 do
+                for x = 0 , tilesetVal.imagewidth / tilesetVal.tilewidth - 1 do
+                  local xx = x * tilesetVal.tilewidth
+                  local yy = y * tilesetVal.tileheight
+                  index = x + (y * tilesetVal.imagewidth / tilesetVal.tilewidth) + 1
+                  table.insert(quadListT[worldKey][mapsKey], love.graphics.newQuad(xx, yy,
+                    tilesetVal.tilewidth, 
+                    tilesetVal.tileheight,
+                    tilesetVal.imagewidth,
+                    tilesetVal.imageheight
+                  )) 
+                end
+              end 
+            end
           end
         end
       end
@@ -95,11 +103,15 @@ end
         if TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey] == nil then
         else
           for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].tilesets) do
-            for tileNum, tileVal in ipairs(tilesetVal.tiles) do
-              if tileVal.animation == nil then
-              else
-                for animFrameI, animFrameVal in ipairs(tileVal.animation) do
-                  tileVal.animTimer = 1
+            if tilesetVal.tiles == nil then
+              print("image tsx file is missing for tileset " .. tileKey)
+            else
+              for tileNum, tileVal in ipairs(tilesetVal.tiles) do
+                if tileVal.animation == nil then
+                else
+                  for animFrameI, animFrameVal in ipairs(tileVal.animation) do
+                    tileVal.animTimer = 1
+                  end
                 end
               end
             end
@@ -115,16 +127,19 @@ end
       if TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey] == nil then
       else
         for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].tilesets) do
-          for tileNum, tileVal in ipairs(tilesetVal.tiles) do 
-            if tileVal.animation == nil then
-              
-            else
-              for animFrameI, animFrameVal in ipairs(tileVal.animation) do
-                tileVal.animTimer = tileVal.animTimer + ( ( (1000 / tileVal.animation[animFrameI].duration) * dt) / #tileVal.animation) -- / #tileVal.animation means that animation speed is divided by the number of total frames per anim.
-                if tileVal.animTimer > #tileVal.animation + 1 then
-                  tileVal.animTimer = 1
+          if tilesetVal.tiles == nil then
+          else
+            for tileNum, tileVal in ipairs(tilesetVal.tiles) do 
+              if tileVal.animation == nil then
+                
+              else
+                for animFrameI, animFrameVal in ipairs(tileVal.animation) do
+                  tileVal.animTimer = tileVal.animTimer + ( ( (1000 / tileVal.animation[animFrameI].duration) * dt) / #tileVal.animation) -- / #tileVal.animation means that animation speed is divided by the number of total frames per anim.
+                  if tileVal.animTimer > #tileVal.animation + 1 then
+                    tileVal.animTimer = 1
+                  end
+                  tileVal.animTimerFloor = math.floor(tileVal.animTimer) -- put the floor here to pervent timer over time.
                 end
-                tileVal.animTimerFloor = math.floor(tileVal.animTimer) -- put the floor here to pervent timer over time.
               end
             end
           end
@@ -179,27 +194,30 @@ function drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, worldKey, 
       if layerDataIndex ~= 0 then 
         -- list tilesets for each layer cause tilesets are parallel to layers lists.
         for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].tilesets) do
-          if layerDataIndex >= tilesetVal.firstgid and 
-          layerDataIndex <= tilesetVal.firstgid + tilesetVal.tilecount - 1 then 
-            -- draw tile layers
-              love.graphics.draw(tilesetsImagesList[worldKey][mapsKey][tileKey].tileImg, quadListT[worldKey][mapsKey][layerDataIndex], xx + worldX, yy + worldY) 
-            for tileNum, tileVal in ipairs(tilesetVal.tiles) do
-              if tileVal.objectGroup == nil then
-              else
-                -- draw collision test
-                for tileObjectGroupI, tileObjectGroupVal in ipairs(tileVal.objectGroup.objects) do
-                  if tileVal.id + 1 == layerDataIndex then
-                    love.graphics.rectangle("line", xx + worldX, yy + worldY, tileObjectGroupVal.width, tileObjectGroupVal.height)
-                    love.graphics.print("img:" .. tilesetVal.name .. "/coll", xx + worldX, yy + worldY - 20)
+          if tilesetVal.tilecount == nil then
+          else
+            if layerDataIndex >= tilesetVal.firstgid and 
+            layerDataIndex <= tilesetVal.firstgid + tilesetVal.tilecount - 1 then 
+              -- draw tile layers
+                love.graphics.draw(tilesetsImagesList[worldKey][mapsKey][tileKey].tileImg, quadListT[worldKey][mapsKey][layerDataIndex], xx + worldX, yy + worldY) 
+              for tileNum, tileVal in ipairs(tilesetVal.tiles) do
+                if tileVal.objectGroup == nil then
+                else
+                  -- draw collision test
+                  for tileObjectGroupI, tileObjectGroupVal in ipairs(tileVal.objectGroup.objects) do
+                    if tileVal.id + 1 == layerDataIndex then
+                      love.graphics.rectangle("line", xx + worldX, yy + worldY, tileObjectGroupVal.width, tileObjectGroupVal.height)
+                      love.graphics.print("img:" .. tilesetVal.name .. "/coll", xx + worldX, yy + worldY - 20)
+                    end
                   end
                 end
-              end
-              if tileVal.animation == nil then
-              else
-                for animFrameI, animFrameVal in ipairs(tileVal.animation) do  
-                  if layerDataIndex == tilesetVal.firstgid + animFrameVal.tileid then -- if the data correspond with tilesets then...
-                    -- draw animations here
-                    love.graphics.draw(tilesetsImagesList[worldKey][mapsKey][tileKey].tileImg, quadListT[worldKey][mapsKey][ tilesetVal.firstgid + tileVal.animation[tileVal.animTimerFloor ].tileid ], xx + worldX + playerOffsetX, yy + worldY + playerOffsetY)
+                if tileVal.animation == nil then
+                else
+                  for animFrameI, animFrameVal in ipairs(tileVal.animation) do  
+                    if layerDataIndex == tilesetVal.firstgid + animFrameVal.tileid then -- if the data correspond with tilesets then...
+                      -- draw animations here
+                      love.graphics.draw(tilesetsImagesList[worldKey][mapsKey][tileKey].tileImg, quadListT[worldKey][mapsKey][ tilesetVal.firstgid + tileVal.animation[tileVal.animTimerFloor ].tileid ], xx + worldX + playerOffsetX, yy + worldY + playerOffsetY)
+                    end
                   end
                 end
               end
@@ -248,6 +266,15 @@ end
 function tiledToLoveT.drawTiled(worldX, worldY, playerOffsetX, playerOffsetY)
   for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do   
     for mapsKey, mapsVal in pairs(TILESETSIMPORTEDFROMMAIN[worldKey]) do
+      -- check if tiled image tsx is missing for the tileset
+      for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].tilesets) do
+        if tilesetVal.tiles == nil then
+          love.graphics.setColor(1,0,0)
+          love.graphics.print("image tsx file is missing for tileset " .. tileKey .. " !", screenWidth / 3, screenHeight / 2)
+          love.graphics.setColor(1,1,1)
+        end
+      end
+      -- end of tsx image check
       for layersKey = 1, #TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].layers , 1 do
         local layerValue = TILESETSIMPORTEDFROMMAIN[worldKey][mapsKey].layers[layersKey]
         if layerValue.type == "group" then
