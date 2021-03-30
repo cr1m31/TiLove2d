@@ -30,6 +30,7 @@ end
 -- button settings ----------------------------------------------------------------------
 local worldNames = {} -- just to get names and print them for button naming
 local mapNames = {}
+local selectedMapNum = {}
 function UI.createUiButtonsOnce(worldAndMapsFromMain) -- button fabric control (called from main linker module)
   local buttonTypesList = {"reloadLove2d", "buttonWorldMenuOpen", "buttonResumeGame", "buttonExitGame", "checkboxChooseWorldToDraw", "checkboxChooseMapToDraw"} -- each button types
   local buttonXOffset = screenWidthUI / 4
@@ -51,8 +52,7 @@ for i, j in ipairs(buttonTypesList) do
       UI.forEachMapButtonList[worldNum] = {}
       mapNames[worldNum] = {}
       for mapNum, mapVal in ipairs(worldVal) do
-        createDifferentButtons(UI.forEachMapButtonList[worldNum], j, 30, 20, (worldNum * buttonXOffset) - buttonXOffset, screenHeightUI / 2.2 + (worldNum * 50), "Choose map: ", "worldEditMode") -- for each map, create a button in a world index table.
-        
+        createDifferentButtons(UI.forEachMapButtonList[worldNum], j, 30, 20, (worldNum * buttonXOffset) - buttonXOffset, screenHeightUI / 2.2 + (worldNum * 50) + (mapNum * 50) - 50, "Choose map: ", "worldEditMode") -- for each map, create a button in a world index table.
         worldNames[worldNum] = worldAndMapsFromMain[worldNum][mapNum].worldName
         mapNames[worldNum][mapNum] = worldAndMapsFromMain[worldNum][mapNum].mapName
       end
@@ -61,6 +61,9 @@ for i, j in ipairs(buttonTypesList) do
 end
   worldAndMapsFromMain = nil
 end
+
+
+-- TRY TO DRAW WORDL BUTTONS IN A DIFFERENT WAY WHEN A WORLD IS SELECTED
 
 -- draw buttons --------------------------------------------------------------
 function UI.drawButtons(state)
@@ -73,9 +76,15 @@ function UI.drawButtons(state)
 end
 
 -- draw buttons for each world
+local selectedWorldNum = nil
 function UI.drawButtonsForEachWorld(state)
   for i, j in ipairs(UI.forEachWorldButtonsList) do
     if j.state == state then
+      if selectedWorldNum == i then -- when button is selected
+        love.graphics.setColor(0.3,0.85,0.25)
+      else
+        love.graphics.setColor(1,1,1)
+      end
       love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
       love.graphics.setColor(0.78,0.48,0.25)
       love.graphics.print(j.name .. worldNames[i], j.x, j.y - (j.height / 2))
@@ -89,6 +98,11 @@ function UI.drawButtonsForEachMap(state)
   for worldNum, worldMapVal in ipairs(UI.forEachMapButtonList) do
     for i, j in ipairs(worldMapVal) do
       if j.state == state then
+        if selectedWorldNum == worldNum and selectedMapNum == i then
+          love.graphics.setColor(0.3,0.85,0.25)
+        else
+          love.graphics.setColor(1,1,1)
+        end
         love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
         love.graphics.setColor(0.08,0.76,0.25)
         love.graphics.print(j.name .. mapNames[worldNum][i], j.x, j.y - (j.height / 1.2))
@@ -131,6 +145,7 @@ function UI.mousePressedInUiCall(mousX, mousY, state)
     then
       if state == "worldEditMode" then
         if UIObjects.type == "checkboxChooseWorldToDraw" then
+          selectedWorldNum = i -- choose world to hignlight in the draw when selected
           return UIObjects.type, i
         end
       end
@@ -146,6 +161,7 @@ function UI.mousePressedInUiCall(mousX, mousY, state)
       then
         if state == "worldEditMode" then
           if UIObjects.type == "checkboxChooseMapToDraw" then
+            selectedMapNum = i
             return UIObjects.type, i
           end
         end
