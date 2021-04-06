@@ -35,11 +35,14 @@ local worldNames = {} -- just to get names and print them for button naming
 local mapNames = {}
 local selectedMapNum = {}
 function UI.createUiButtonsOnce(worldAndMapsFromMain) -- button fabric control (called from main linker module)
-  local buttonTypesList = {"reloadLove2d", "buttonWorldMenuOpen", "buttonResumeGame", "buttonExitGame", "checkboxChooseWorldToDraw", "checkboxChooseMapToDraw"} -- each button types
+  local buttonTypesList = {"reloadLove2d", "buttonWorldMenuOpen", "buttonResumeGame", "buttonExitGame", "checkboxChooseWorldToDraw", "checkboxChooseMapToDraw", "automaticMapBuild"} -- each button types
   local buttonXOffset = screenWidthUI / 3.5
+  
 for i, j in ipairs(buttonTypesList) do
   if j == "reloadLove2d" then
     createDifferentButtons(UI.buttonsMenuList, j, 70, 20, screenWidthUI / 1.2, 80, "Reload game", "worldEditMode")
+  elseif j == "automaticMapBuild" then
+    createDifferentButtons(UI.buttonsMenuList, j, 70, 20, screenWidthUI / 1.5, 80, "Automatic maps", "worldEditMode")
   elseif j == "buttonWorldMenuOpen" then
     createDifferentButtons(UI.buttonsMenuList, j, 70, 30, screenWidthUI / 3, 300, "World editor", "menuMode")
   elseif j == "buttonResumeGame" then
@@ -172,6 +175,8 @@ function UI.mousePressedInUiCall(mousX, mousY, state)
         end
       elseif state == "worldEditMode" then
         if UIObjects.type == "reloadLove2d" then
+          return UIObjects.type
+        elseif UIObjects.type == "automaticMapBuild" then
           return UIObjects.type
         end
       end

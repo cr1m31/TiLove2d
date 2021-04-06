@@ -39,6 +39,7 @@ local MAPSFROMWORLDTOMAIN = {}
 local worldNamesImport = {}
 local CHOOSEWORLD = nil
 local CHOOSEMAP = nil
+local automaticMapsBool = false
 
 function importWorldNamesInMain()
   worldNamesImport = worldFileSearchMod.returnWorldNames()
@@ -186,6 +187,10 @@ function love.mousepressed(x, y, MouseButton, istouch)
       -- world edit button restart
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "reloadLove2d" then
         love.event.quit( "restart" )
+      -- automatic map mode load all maps of the active world
+      elseif uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "automaticMapBuild" then
+        automaticMapsBool = true
+        print("auto maps")
       -- world choosing buttons ------------------------------------------------------------------------
       elseif uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "checkboxChooseWorldToDraw" then
         local worldButtonType, worldButtonNum = uiButtonsTable.mousePressedInUiCall(x, y, mainState.state)
@@ -194,7 +199,11 @@ function love.mousepressed(x, y, MouseButton, istouch)
       elseif uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "checkboxChooseMapToDraw" then
         local mapButtonType, mapButtonNum = uiButtonsTable.mousePressedInUiCall(x, y, mainState.state)
         print("choose map in main", mapButtonNum)
-        CHOOSEMAP = mapButtonNum -- set the map to draw as the button choosed in wordl editor inside UI module.
+        if automaticMapsBool then
+          CHOOSEMAP = 12000
+        else
+          CHOOSEMAP = mapButtonNum -- set the map to draw as the button choosed in wordl editor inside UI module.
+        end
       end
     elseif mainState.state == stateMachine.menuMode then
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "buttonResumeGame" then
