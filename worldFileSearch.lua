@@ -78,8 +78,8 @@ function worldSearchModule.drawFileBrowserResults()
     if j == "" then
       love.graphics.print("world file name is an empty string !!", 10, 30)
     else
-      love.graphics.print("tiledFiles " .. "folder content = ")
-      love.graphics.print(j .. ".world", 160, (i * 20) - 20 )
+      love.graphics.print("    tiledFiles " .. "folder content = ")
+      love.graphics.print("    " .. j .. ".world", 160, (i * 20) - 20 )
     end
   end
 end
