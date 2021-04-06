@@ -4,6 +4,7 @@ local UI = {}
 local screenWidthUI = love.graphics.getWidth()
 local screenHeightUI = love.graphics.getHeight()
 
+-- buttons load and create ---------------------------------------------------------------------
 UI.buttonsMenuList = {}
 UI.forEachWorldButtonsList = {}
 UI.forEachMapButtonList = {}
@@ -12,6 +13,8 @@ UI.forEachMapButtonList = {}
 function createDifferentButtons(buttonList, bType, w, h, x, y, name, state) -- button fabric
   button = {}
   button.image = love.graphics.newImage("images/UI/imgButton.png")
+  button.imagePressed = love.graphics.newImage("images/UI/imgButtonPressed.png")
+  button.isDownBool = false
   button.imageWidth = button.image:getWidth()
   button.imageHeight = button.image:getHeight()
   button.imagePressed = love.graphics.newImage("images/UI/imgButtonPressed.png")
@@ -62,14 +65,71 @@ end
   worldAndMapsFromMain = nil
 end
 
+-- buttons and mouse update ---------------------------------------------------------
+function AABBCollisions(x,y,b) -- also used for mouse callbacks at the end
+  if x < b.x + b.width and
+  x > b.x and
+  y < b.y + b.height and
+  y > b.y 
+  then
+    return true
+  else
+    return false
+  end
+end
 
--- TRY TO DRAW WORDL BUTTONS IN A DIFFERENT WAY WHEN A WORLD IS SELECTED
+function browseAllButtonsListUpdate(buttonList,x,y,mouseIsD) -- check mouse with button collision for any buttons list
+  for i, j in ipairs(buttonList) do
+    if mouseIsD and
+    AABBCollisions(x,y,j) then -- if mouse xy is colliding with any button in list and mouse button is down
+      j.isDownBool = true -- this button is holded down
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      if j  ~= j then
+        j.isDownBool = false
+      end
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    end
+  end
+end
+
+function UI.mouseButtonUpdate(mouseIsDownBool,x,y) -- get mouse info from mainlinker module
+  browseAllButtonsListUpdate(UI.buttonsMenuList,x,y,mouseIsDownBool) -- call mouse collision for this buttons list
+  browseAllButtonsListUpdate(UI.forEachWorldButtonsList,x,y,mouseIsDownBool)
+  for i, j in ipairs(UI.forEachMapButtonList) do -- map buttons are in a sub world list
+    browseAllButtonsListUpdate(j,x,y,mouseIsDownBool) -- browse map buttons for each world
+  end
+end
 
 -- draw buttons --------------------------------------------------------------
 function UI.drawButtons(state)
   for i, j in ipairs(UI.buttonsMenuList) do
     if j.state == state then
-      love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      if j.isDownBool then -- if the button is down boolean is true, use the image of a pressed down button
+        love.graphics.draw(j.imagePressed, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      else
+        love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      end
       love.graphics.print(j.name, j.x, j.y - j.height)
     end
   end
@@ -85,7 +145,11 @@ function UI.drawButtonsForEachWorld(state)
       else
         love.graphics.setColor(1,1,1)
       end
-      love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      if j.isDownBool then -- button hold state
+        love.graphics.draw(j.imagePressed, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      else
+        love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      end
       love.graphics.setColor(0.78,0.48,0.25)
       love.graphics.print(j.name .. worldNames[i], j.x, j.y - (j.height / 2))
       love.graphics.setColor(1,1,1)
@@ -103,7 +167,11 @@ function UI.drawButtonsForEachMap(state)
         else
           love.graphics.setColor(1,1,1)
         end
+        if j.isDownBool then -- button hold state
+        love.graphics.draw(j.imagePressed, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      else
         love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
+      end
         love.graphics.setColor(0.08,0.76,0.25)
         love.graphics.print(j.name .. mapNames[worldNum][i], j.x, j.y - (j.height / 1.2))
         love.graphics.setColor(1,1,1)
@@ -116,11 +184,7 @@ end
 function UI.mousePressedInUiCall(mousX, mousY, state)
   -- menu Buttons pressed ---------------------------------
   for i , UIObjects in ipairs(UI.buttonsMenuList) do
-    if mousX < UIObjects.x + UIObjects.width and
-    mousX > UIObjects.x and
-    mousY < UIObjects.y + UIObjects.height and
-    mousY > UIObjects.y 
-    then
+    if AABBCollisions(mousX,mousY,UIObjects) then
       if state == "menuMode" then
         if UIObjects.type == "buttonResumeGame" then
           return UIObjects.type
@@ -138,11 +202,7 @@ function UI.mousePressedInUiCall(mousX, mousY, state)
   end
   -- Buttons pressed for each world ---------------------------------
   for i , UIObjects in ipairs(UI.forEachWorldButtonsList) do
-    if mousX < UIObjects.x + UIObjects.width and
-    mousX > UIObjects.x and
-    mousY < UIObjects.y + UIObjects.height and
-    mousY > UIObjects.y 
-    then
+    if AABBCollisions(mousX,mousY,UIObjects) then
       if state == "worldEditMode" then
         if UIObjects.type == "checkboxChooseWorldToDraw" then
           selectedWorldNum = i -- choose world to hignlight in the draw when selected
@@ -154,11 +214,7 @@ function UI.mousePressedInUiCall(mousX, mousY, state)
   -- Buttons pressed for each map ---------------------------------
   for worldNum, worldMapVal in ipairs(UI.forEachMapButtonList) do
     for i , UIObjects in ipairs(worldMapVal) do
-      if mousX < UIObjects.x + UIObjects.width and
-      mousX > UIObjects.x and
-      mousY < UIObjects.y + UIObjects.height and
-      mousY > UIObjects.y 
-      then
+      if AABBCollisions(mousX,mousY,UIObjects) then
         if state == "worldEditMode" then
           if UIObjects.type == "checkboxChooseMapToDraw" then
             selectedMapNum = i

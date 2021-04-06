@@ -95,11 +95,24 @@ function love.load()
   collisionTestMod = require("collisionTest") 
 end
 
+local mouseOneIsDown = false
+local mouseX = nil
+local mouseY = nil
 function love.update(dt)
   
   if dt > 0.035 then -- if we move the window, the game freezes while collisions are off.
     return 
   end 
+  
+  -- check when mouse button is down
+  mouseX = love.mouse.getX() 
+  mouseY = love.mouse.getY() 
+  if love.mouse.isDown(1) then
+    mouseOneIsDown = true
+  else
+    mouseOneIsDown = false
+  end
+  uiButtonsTable.mouseButtonUpdate(mouseOneIsDown,mouseX,mouseY) --communicate to UI
   
   if mainState.state == stateMachine.gameMode then
     tiledToLoveMod.updateAnims(dt)
