@@ -31,11 +31,12 @@ end
 
 -- button settings ----------------------------------------------------------------------
 local worldNames = {} -- just to get names and print them for button naming
-local mapNames = {}
+
 local selectedMapNum = {}
+--(buttonList, bType, w, h, x, y, name, state)
 function UI.createUiButtonsOnce(worldAndMapsFromMain) -- button fabric control (called from main linker module)
   local buttonTypesList = {"reloadLove2d", "buttonWorldMenuOpen", "buttonResumeGame", "buttonExitGame", "checkboxChooseWorldToDraw", "automaticMapBuild"} -- each button types
-  local buttonXOffset = screenWidthUI / 3.5
+  local buttonYOffset = screenHeightUI / 10
   
 for i, j in ipairs(buttonTypesList) do
   if j == "reloadLove2d" then
@@ -50,7 +51,7 @@ for i, j in ipairs(buttonTypesList) do
     createDifferentButtons(UI.buttonsMenuList, j, 130, 50, screenWidthUI / 3, 180, "Exit Game", "menuMode")
   elseif j == "checkboxChooseWorldToDraw" then
     for worldNum, worldVal in ipairs(worldAndMapsFromMain) do
-      createDifferentButtons(UI.forEachWorldButtonsList, j, 60, 30, 20 + (worldNum * buttonXOffset) - buttonXOffset, screenHeightUI / 2.8, "Choose world: ", "worldEditMode")
+      createDifferentButtons(UI.forEachWorldButtonsList, j, 60, 30, 20, screenHeightUI / 2.8 + (worldNum * buttonYOffset) - buttonYOffset, "Choose world: ", "worldEditMode")
       worldNames[worldNum] = worldAndMapsFromMain[worldNum]
     end
   end

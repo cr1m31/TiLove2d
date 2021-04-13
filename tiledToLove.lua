@@ -93,10 +93,6 @@ end
     end
   end
   
-  function tiledToLoveT.exportQuadsAndImageListFromTiledToMain()
-    return quadListT, tilesetsImagesList
-  end
-  
   function tiledToLoveT.declareAnimTimer()
     for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do    
       for mapsKey, mapsVal in pairs(TILESETSIMPORTEDFROMMAIN[1]) do
@@ -176,7 +172,7 @@ end
   
 --https://www.youtube.com/watch?v=_NpDbNtJyDQ&t=242s
 
-function drawGroupFolderLayers(worldX, worldY, playerOffsetX, playerOffsetY, worldKey, mapsKey, layersKey, subLayerVal)
+function drawGroupFolderLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, layersKey, subLayerVal)
   if subLayerVal.type == "tilelayer"then
     drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, worldKey, mapsKey, layersKey, subLayerVal)
   elseif subLayerVal.type == "objectgroup" then -- this will select object layers
@@ -184,7 +180,7 @@ function drawGroupFolderLayers(worldX, worldY, playerOffsetX, playerOffsetY, wor
   end  
 end
 
-function drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, worldKey, mapsKey, layersKey, layerValue)
+function drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, layersKey, layerValue)
   for y = 0, layerValue.height - 1 do
     for x = 0 , layerValue.width - 1 do
       local xx = x * TILESETSIMPORTEDFROMMAIN[1][mapsKey].tilewidth + TILESETSIMPORTEDFROMMAIN[1][mapsKey].mapOnWorldPosX + TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers[layersKey].offsetx -- xx = adjust x on map grid, on world pos and layer offset 
@@ -229,7 +225,7 @@ function drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, worldKey, 
   end
 end
 
-function drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, worldKey, mapsKey, layersKey, layerValue)
+function drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, layersKey, layerValue)
   if layerValue.objects ~= nil then
     for objectsI, objectsVal in ipairs(layerValue.objects) do
       local xxO = objectsVal.x + TILESETSIMPORTEDFROMMAIN[1][mapsKey].mapOnWorldPosX + layerValue.offsetx
@@ -262,25 +258,20 @@ function drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, wor
     end
   end
 end
-local chooseMapTemp = nil
-function tiledToLoveT.drawTiled(chooseWorld, chooseMap, worldX, worldY, playerOffsetX, playerOffsetY)
+local mapsKey = nil
+function tiledToLoveT.drawTiled(worldX, worldY, playerOffsetX, playerOffsetY)
   for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do   
     for mapsKey, mapsVal in pairs(TILESETSIMPORTEDFROMMAIN[1]) do
-      if chooseMap == 12000 then
-        chooseMapTemp = mapsKey
-      else
-        chooseMapTemp = chooseMap
-      end
       if TILESETSIMPORTEDFROMMAIN[1] == nil then
         love.graphics.setColor(1,0,0)
         love.graphics.print("Please choose a world in the world editor. ", screenWidth / 3, screenHeight / 1.5)
         love.graphics.setColor(1,1,1)
-      elseif TILESETSIMPORTEDFROMMAIN[1][chooseMapTemp] == nil then
+      elseif TILESETSIMPORTEDFROMMAIN[1][mapsKey] == nil then
         love.graphics.setColor(1,0,0)
         love.graphics.print("Please choose a map in the world editor. ", screenWidth / 3, screenHeight / 1.2)
         love.graphics.setColor(1,1,1)
       else
-        for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[1][chooseMapTemp].tilesets) do
+        for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[1][mapsKey].tilesets) do
           if tilesetVal.tiles == nil then
             love.graphics.setColor(1,0,0)
             love.graphics.print("please embedd tilesets in Tiled map editor " .. tileKey .. " !", screenWidth / 3, screenHeight / 2)
@@ -288,19 +279,19 @@ function tiledToLoveT.drawTiled(chooseWorld, chooseMap, worldX, worldY, playerOf
           end
         end
         -- end of tsx image check
-        for layersKey = 1, #TILESETSIMPORTEDFROMMAIN[1][chooseMapTemp].layers , 1 do
-          local layerValue = TILESETSIMPORTEDFROMMAIN[1][chooseMapTemp].layers[layersKey]
+        for layersKey = 1, #TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers , 1 do
+          local layerValue = TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers[layersKey]
           if layerValue.type == "group" then
             for subLayerI, subLayerVal in ipairs(layerValue.layers) do
               love.graphics.setColor(1,0.4,0.4)
               -- draw tiles or animations in GROUPS (folders)
-              drawGroupFolderLayers(worldX, worldY, playerOffsetX, playerOffsetY, chooseWorld, chooseMapTemp, layersKey, subLayerVal)
+              drawGroupFolderLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, layersKey, subLayerVal)
               love.graphics.setColor(1,1,1)
             end
           elseif layerValue.type == "tilelayer"then
-            drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, chooseWorld, chooseMapTemp, layersKey, layerValue)
+            drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, layersKey, layerValue)
           elseif layerValue.type == "objectgroup" then -- this will select object layers 
-            drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, chooseWorld, chooseMapTemp, layersKey, layerValue)
+            drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, layersKey, layerValue)
           end  
         end
       end

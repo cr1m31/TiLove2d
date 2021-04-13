@@ -39,10 +39,8 @@ mainState.state = stateMachine.worldEditMode
 local MAPSFROMWORLDTOMAIN = {}
 local worldNamesImport = {}
 local CHOOSEWORLD = 1
-local CHOOSEMAP = 1
 local automaticMapsBool = false
 
-local worldNamesAndNumber = nil
 function importWorldNamesInMain()
   worldNamesImport = worldFileSearchMod.returnWorldNames()
   if worldNamesImport == nil then
@@ -50,14 +48,24 @@ function importWorldNamesInMain()
   else
     worldJsonToLuaCall = require("worldJsonToLua") -- call world module when world files were found in world file search module
     worldJsonToLuaCall.getWorldNamesFromMain(worldNamesImport) --pass world names to the world module
-    
-    worldNamesAndNumber = worldNamesImport
-    
-    worldAndMapsLoaderMod = require("worldAndMapsLoader")
-    worldAndMapsLoaderMod.passWorldNamesToMapsLoaderFromMain(worldNamesImport, CHOOSEWORLD)
-    MAPSFROMWORLDTOMAIN, worldNamesImport = worldAndMapsLoaderMod.returnWorldMapsToMain() -- get map files and world names from the world loader module 
-    -- clear maps in worldJsonToLua (empty memory)
-    worldAndMapsLoaderMod.clearMapsData()
+    for i, j in ipairs(worldNamesImport) do 
+    end
+  end
+end
+
+local activeWorldNameImport = nil
+function reloadMapsData()
+  MAPSFROMWORLDTOMAIN[1] = {}
+  table.remove(MAPSFROMWORLDTOMAIN, 1) -- clear maps data
+  
+  worldAndMapsLoaderMod = require("worldAndMapsLoader")
+  worldAndMapsLoaderMod.passWorldNamesToMapsLoaderFromMain(worldNamesImport, CHOOSEWORLD)
+  
+  MAPSFROMWORLDTOMAIN, activeWorldNameImport = worldAndMapsLoaderMod.returnWorldMapsToMain() -- get map files and world names from the world loader module 
+  prepareTiledToLoveAndInjectWorldDataIntoMapFiles() -- is requiring tiledToLove too.
+  
+  for i, j in ipairs(MAPSFROMWORLDTOMAIN[1]) do
+    print("map num = " .. i .. " posX = " .. j.mapOnWorldPosX, "posY = " .. j.mapOnWorldPosY)
   end
 end
 
@@ -65,14 +73,11 @@ function prepareTiledToLoveAndInjectWorldDataIntoMapFiles()
   tiledToLoveMod = require("tiledToLove")
   local worldDataRequire = nil
   -- catch world names
-  if love.filesystem.getInfo("worldData" .. "/" .. worldNamesImport .. ".lua") then -- check if world data lua module exists
-    worldDataRequire = require("worldData" .. "/" .. worldNamesImport) -- require lua world files content into worldData folder.
+  if love.filesystem.getInfo("worldData" .. "/" .. activeWorldNameImport .. ".lua") then -- check if world data lua module exists
+    worldDataRequire = require("worldData" .. "/" .. activeWorldNameImport) -- require lua world files content into worldData folder.
     for l, m in ipairs(worldDataRequire.maps) do
       if love.filesystem.getInfo("lua_maps" .. "/" .. m.fileName) then -- check if map exists
         -- injects world number and map position into the tiled map file.
-        MAPSFROMWORLDTOMAIN[1][l].worldNumber = CHOOSEWORLD
-        MAPSFROMWORLDTOMAIN[1][l].mapNumber = l
-        MAPSFROMWORLDTOMAIN[1][l].mapName = m.fileName
         MAPSFROMWORLDTOMAIN[1][l].mapOnWorldPosX = m.x -- injects the world x coordinates into the tiled map
         MAPSFROMWORLDTOMAIN[1][l].mapOnWorldPosY = m.y
       else 
@@ -80,7 +85,6 @@ function prepareTiledToLoveAndInjectWorldDataIntoMapFiles()
       end
     end
   end
-  
   tiledToLoveMod.passMainTilesetsToTiledToLove(MAPSFROMWORLDTOMAIN)
   tiledToLoveMod.imageListTable()
   tiledToLoveMod.loadTilesetImages()
@@ -92,12 +96,15 @@ function love.load()
   
   worldFileSearchMod.createWorldDirectoryIfNil()
   worldFileSearchMod.loadFileBrowser()
+  
+  
+
   importWorldNamesInMain()
-  prepareTiledToLoveAndInjectWorldDataIntoMapFiles() -- is requiring tiledToLove too.
+  reloadMapsData()
+  
   -- create buttons
-  uiButtonsTable.createUiButtonsOnce(worldNamesAndNumber) -- after world is loaded
-  -- import quads and imagelist from tiledToLove
-  local quadsImportFromTiled, imageListFromTiled = tiledToLoveMod.exportQuadsAndImageListFromTiledToMain()
+  uiButtonsTable.createUiButtonsOnce(worldNamesImport) -- after world is loaded
+  
   tiledToLoveMod.declareAnimTimer()
   
   collisionTestMod = require("collisionTest") 
@@ -149,7 +156,7 @@ function love.draw()
   if mainState.state == stateMachine.gameMode then
     --tiledToLoveMod.drawLayerDataIndexes(fakeWorldX, fakeWorldY)
     love.graphics.scale(1, 1)  
-    tiledToLoveMod.drawTiled(CHOOSEWORLD, CHOOSEMAP, fakeWorldX, fakeWorldY, playerOffsetX, playerOffsetY)
+    tiledToLoveMod.drawTiled(fakeWorldX, fakeWorldY, playerOffsetX, playerOffsetY)
     love.graphics.scale(1, 1)
   elseif mainState.state == stateMachine.worldEditMode then
     worldFileSearchMod.drawFileBrowserResults()
@@ -182,8 +189,6 @@ function love.keypressed(key)
   end
 end
 
-local MODIFIEDMAPS = {}
-
 function love.mousepressed(x, y, MouseButton, istouch)
   if MouseButton == 1 then
     if mainState.state == stateMachine.gameMode then
@@ -204,11 +209,10 @@ function love.mousepressed(x, y, MouseButton, istouch)
         print("choose World in main", worldButtonNum)
         CHOOSEWORLD = worldButtonNum -- set the world to draw as the button choosed in wordl editor inside UI module.
         
-        package.loaded.worldAndMapsLoaderMod = nil
-        worldAndMapsLoaderMod = require("worldAndMapsLoader")
-         
-        importWorldNamesInMain() -- reload world and maps
+        reloadMapsData() -- reload world and maps
         
+        -- clear maps in worldJsonToLua (empty memory)
+        worldAndMapsLoaderMod.clearMapsData()
       end
     elseif mainState.state == stateMachine.menuMode then
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "buttonResumeGame" then
