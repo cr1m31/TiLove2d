@@ -7,7 +7,6 @@ local screenHeightUI = love.graphics.getHeight()
 -- buttons load and create ---------------------------------------------------------------------
 UI.buttonsMenuList = {}
 UI.forEachWorldButtonsList = {}
-UI.forEachMapButtonList = {}
 
 -- (buttonList, bType, w, h, x, y, name, state) = (different table of buttons, type of button, width, height, x position, y position, name of the button, state = in which game state this button is active.)
 function createDifferentButtons(buttonList, bType, w, h, x, y, name, state) -- button fabric
@@ -35,7 +34,7 @@ local worldNames = {} -- just to get names and print them for button naming
 local mapNames = {}
 local selectedMapNum = {}
 function UI.createUiButtonsOnce(worldAndMapsFromMain) -- button fabric control (called from main linker module)
-  local buttonTypesList = {"reloadLove2d", "buttonWorldMenuOpen", "buttonResumeGame", "buttonExitGame", "checkboxChooseWorldToDraw", "checkboxChooseMapToDraw", "automaticMapBuild"} -- each button types
+  local buttonTypesList = {"reloadLove2d", "buttonWorldMenuOpen", "buttonResumeGame", "buttonExitGame", "checkboxChooseWorldToDraw", "automaticMapBuild"} -- each button types
   local buttonXOffset = screenWidthUI / 3.5
   
 for i, j in ipairs(buttonTypesList) do
@@ -52,18 +51,9 @@ for i, j in ipairs(buttonTypesList) do
   elseif j == "checkboxChooseWorldToDraw" then
     for worldNum, worldVal in ipairs(worldAndMapsFromMain) do
       createDifferentButtons(UI.forEachWorldButtonsList, j, 60, 30, 20 + (worldNum * buttonXOffset) - buttonXOffset, screenHeightUI / 2.8, "Choose world: ", "worldEditMode")
+      worldNames[worldNum] = worldAndMapsFromMain[worldNum]
     end
-  elseif j == "checkboxChooseMapToDraw" then
-    for worldNum, worldVal in ipairs(worldAndMapsFromMain) do -- for each world create a button
-      UI.forEachMapButtonList[worldNum] = {}
-      mapNames[worldNum] = {}
-      for mapNum, mapVal in ipairs(worldVal) do
-        createDifferentButtons(UI.forEachMapButtonList[worldNum], j, 30, 20, 20 + (worldNum * buttonXOffset) - buttonXOffset, screenHeightUI / 2.2 + (mapNum * 50) - 50, "Choose map: ", "worldEditMode") -- for each map, create a button in a world index table.
-        worldNames[worldNum] = worldAndMapsFromMain[worldNum][mapNum].worldName
-        mapNames[worldNum][mapNum] = worldAndMapsFromMain[worldNum][mapNum].mapName
-      end
-    end
-  end  
+  end
 end
   worldAndMapsFromMain = nil
 end
@@ -95,10 +85,6 @@ end
 function UI.mouseButtonUpdate(mouseIsDownBool,x,y) -- get mouse info from mainlinker module
   browseAllButtonsListUpdate(UI.buttonsMenuList,x,y,mouseIsDownBool) -- call mouse collision for this buttons list
   browseAllButtonsListUpdate(UI.forEachWorldButtonsList,x,y,mouseIsDownBool)
-  for i, j in ipairs(UI.forEachMapButtonList) do -- map buttons are in a sub world list
-    browseAllButtonsListUpdate(j,x,y,mouseIsDownBool) -- browse map buttons for each world
-  end
- 
 end
 
 -- draw buttons --------------------------------------------------------------
@@ -137,29 +123,6 @@ function UI.drawButtonsForEachWorld(state)
   end
 end
 
--- draw buttons for each map
-function UI.drawButtonsForEachMap(state)
-  for worldNum, worldMapVal in ipairs(UI.forEachMapButtonList) do
-    for i, j in ipairs(worldMapVal) do
-      if j.state == state then
-        if selectedWorldNum == worldNum and selectedMapNum == i then
-          love.graphics.setColor(0.3,0.85,0.25)
-        else
-          love.graphics.setColor(1,1,1)
-        end
-        if j.isDownBool then -- button hold state
-        love.graphics.draw(j.imagePressed, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
-      else
-        love.graphics.draw(j.image, j.x, j.y, 0, j.width / j.imageWidth, j.height / j.imageHeight)
-      end
-        love.graphics.setColor(0.08,0.76,0.25)
-        love.graphics.print(j.name .. mapNames[worldNum][i], j.x, j.y - (j.height / 1.2))
-        love.graphics.setColor(1,1,1)
-      end
-    end
-  end
-end
-
 --click buttons, mouse callbacks ------------------------------------------------------------------------------
 function UI.mousePressedInUiCall(mousX, mousY, state)
   -- menu Buttons pressed ---------------------------------
@@ -189,19 +152,6 @@ function UI.mousePressedInUiCall(mousX, mousY, state)
         if UIObjects.type == "checkboxChooseWorldToDraw" then
           selectedWorldNum = i -- choose world to hignlight in the draw when selected
           return UIObjects.type, i
-        end
-      end
-    end
-  end
-  -- Buttons pressed for each map ---------------------------------
-  for worldNum, worldMapVal in ipairs(UI.forEachMapButtonList) do
-    for i , UIObjects in ipairs(worldMapVal) do
-      if AABBCollisions(mousX,mousY,UIObjects) then
-        if state == "worldEditMode" then
-          if UIObjects.type == "checkboxChooseMapToDraw" then
-            selectedMapNum = i
-            return UIObjects.type, i
-          end
         end
       end
     end
