@@ -6,7 +6,11 @@ local tiledToLoveT = {}
 local TILESETSIMPORTEDFROMMAIN = {}
 
 function tiledToLoveT.passMainTilesetsToTiledToLove(importedTilesetsP)
+  print("#importedTilesetsP in tiled to love line 9 / " .. #importedTilesetsP)
   TILESETSIMPORTEDFROMMAIN = importedTilesetsP
+  
+  
+  
   createSubTableQuadLImgL()
 end
 
@@ -260,7 +264,7 @@ function drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, map
 end
 local mapsKey = nil
 function tiledToLoveT.drawTiled(worldX, worldY, playerOffsetX, playerOffsetY)
-  for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do   
+  for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do  
     for mapsKey, mapsVal in pairs(TILESETSIMPORTEDFROMMAIN[1]) do
       if TILESETSIMPORTEDFROMMAIN[1] == nil then
         love.graphics.setColor(1,0,0)

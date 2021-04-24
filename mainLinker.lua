@@ -59,7 +59,13 @@ function reloadMapsData()
   table.remove(MAPSFROMWORLDTOMAIN, 1) -- clear maps data
   
   worldAndMapsLoaderMod = require("worldAndMapsLoader")
+  
+   -- clear maps in worldJsonToLua (empty memory)
+  worldAndMapsLoaderMod.clearMapsData() -- warning, be sure to place it right there in this order
+  
   worldAndMapsLoaderMod.passWorldNamesToMapsLoaderFromMain(worldNamesImport, CHOOSEWORLD)
+  
+ 
   
   MAPSFROMWORLDTOMAIN, activeWorldNameImport = worldAndMapsLoaderMod.returnWorldMapsToMain() -- get map files and world names from the world loader module 
   prepareTiledToLoveAndInjectWorldDataIntoMapFiles() -- is requiring tiledToLove too.
@@ -67,10 +73,11 @@ function reloadMapsData()
   for i, j in ipairs(MAPSFROMWORLDTOMAIN[1]) do
     print("map num = " .. i .. " posX = " .. j.mapOnWorldPosX, "posY = " .. j.mapOnWorldPosY)
   end
+  
+  
 end
 
 function prepareTiledToLoveAndInjectWorldDataIntoMapFiles()
-  tiledToLoveMod = require("tiledToLove")
   local worldDataRequire = nil
   -- catch world names
   if love.filesystem.getInfo("worldData" .. "/" .. activeWorldNameImport .. ".lua") then -- check if world data lua module exists
@@ -85,10 +92,14 @@ function prepareTiledToLoveAndInjectWorldDataIntoMapFiles()
       end
     end
   end
+  tiledToLoveMod = require("tiledToLove")
+  print("main maps to tiled to love line 90 " .. #MAPSFROMWORLDTOMAIN[1])
+  print("tiledToLove does not get maps ?")
   tiledToLoveMod.passMainTilesetsToTiledToLove(MAPSFROMWORLDTOMAIN)
   tiledToLoveMod.imageListTable()
   tiledToLoveMod.loadTilesetImages()
   tiledToLoveMod.buildTilesetQuad()
+  tiledToLoveMod.declareAnimTimer()
 end
 
 function love.load() 
@@ -105,8 +116,6 @@ function love.load()
   -- create buttons
   uiButtonsTable.createUiButtonsOnce(worldNamesImport) -- after world is loaded
   
-  tiledToLoveMod.declareAnimTimer()
-  
   collisionTestMod = require("collisionTest") 
 end
 
@@ -114,7 +123,6 @@ local mouseOneIsDown = false
 local mouseX = nil
 local mouseY = nil
 function love.update(dt)
-  
   if dt > 0.035 then -- if we move the window, the game freezes while collisions are off.
     return 
   end 
@@ -211,8 +219,7 @@ function love.mousepressed(x, y, MouseButton, istouch)
         
         reloadMapsData() -- reload world and maps
         
-        -- clear maps in worldJsonToLua (empty memory)
-        worldAndMapsLoaderMod.clearMapsData()
+        
       end
     elseif mainState.state == stateMachine.menuMode then
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "buttonResumeGame" then
