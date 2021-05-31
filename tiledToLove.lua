@@ -3,14 +3,15 @@
 
 local tiledToLoveT = {}
 
-local TILESETSIMPORTEDFROMMAIN = {}
+local TILESETSIMPORTEDFROMMAIN = nil
+
+function tiledToLoveT.emptyTilesetsToTiledToLove()
+  TILESETSIMPORTEDFROMMAIN = {}
+  table.remove(TILESETSIMPORTEDFROMMAIN, 1)
+end
 
 function tiledToLoveT.passMainTilesetsToTiledToLove(importedTilesetsP)
-  print("#importedTilesetsP in tiled to love line 9 / " .. #importedTilesetsP)
   TILESETSIMPORTEDFROMMAIN = importedTilesetsP
-  
-  
-  
   createSubTableQuadLImgL()
 end
 
@@ -205,9 +206,10 @@ function drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, l
                 else
                   -- draw collision test
                   for tileObjectGroupI, tileObjectGroupVal in ipairs(tileVal.objectGroup.objects) do
-                    if tileVal.id + 1 == layerDataIndex then
+                    -- be careful to add firstgid instead of 1
+                    if tileVal.id + tilesetVal.firstgid == layerDataIndex then
                       love.graphics.rectangle("line", xx + worldX, yy + worldY, tileObjectGroupVal.width, tileObjectGroupVal.height)
-                      love.graphics.print("img:" .. tilesetVal.name .. "/coll", xx + worldX, yy + worldY - 20)
+                      love.graphics.print("img:" .. tilesetVal.name .. "/coll " .. tileVal.id, xx + worldX, yy + worldY - 20)
                     end
                   end
                 end

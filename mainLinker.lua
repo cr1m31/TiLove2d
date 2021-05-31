@@ -93,8 +93,7 @@ function prepareTiledToLoveAndInjectWorldDataIntoMapFiles()
     end
   end
   tiledToLoveMod = require("tiledToLove")
-  print("main maps to tiled to love line 90 " .. #MAPSFROMWORLDTOMAIN[1])
-  print("tiledToLove does not get maps ?")
+  tiledToLoveMod.emptyTilesetsToTiledToLove()
   tiledToLoveMod.passMainTilesetsToTiledToLove(MAPSFROMWORLDTOMAIN)
   tiledToLoveMod.imageListTable()
   tiledToLoveMod.loadTilesetImages()
@@ -211,15 +210,9 @@ function love.mousepressed(x, y, MouseButton, istouch)
         print("auto maps")
       -- world choosing buttons ------------------------------------------------------------------------
       elseif uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "checkboxChooseWorldToDraw" then
-       
-
         local worldButtonType, worldButtonNum = uiButtonsTable.mousePressedInUiCall(x, y, mainState.state)
-        print("choose World in main", worldButtonNum)
         CHOOSEWORLD = worldButtonNum -- set the world to draw as the button choosed in wordl editor inside UI module.
-        
         reloadMapsData() -- reload world and maps
-        
-        
       end
     elseif mainState.state == stateMachine.menuMode then
       if uiButtonsTable.mousePressedInUiCall(x, y, mainState.state) == "buttonResumeGame" then
