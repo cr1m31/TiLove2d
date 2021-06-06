@@ -121,6 +121,69 @@ end
       end
     end
   end
+  -- mark or tag tiles that are part of an animation sequence
+  local dataIndexEqualAnimTileIdTable = nil -- will contain tagged tiles that are duplicated in data and tileset animated tiles
+  function tiledToLoveT.compareDataAndTilesToTagDuplicateAnims()
+    dataIndexEqualAnimTileIdTable = {}
+    for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do 
+      dataIndexEqualAnimTileIdTable[worldKey] = {}
+      for mapsKey, mapsVal in pairs(TILESETSIMPORTEDFROMMAIN[1]) do
+        dataIndexEqualAnimTileIdTable[worldKey][mapsKey] = {}
+        dataIndexEqualAnimTileIdTable[worldKey][mapsKey].layers = {}
+        if TILESETSIMPORTEDFROMMAIN[1][mapsKey] == nil then
+      else
+        for layersKey = 1, #TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers do
+          
+          dataIndexEqualAnimTileIdTable[worldKey][mapsKey].layers[layersKey] = {}
+          
+          
+            local layerValue = TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers[layersKey] 
+            if layerValue.type == "tilelayer" then
+              for y = 0, layerValue.height - 1 do
+                for x = 0 , layerValue.width - 1 do
+                  local index = x + (y * layerValue.width) + 1 
+                  local layerDataIndex = layerValue.data[index]
+                  if layerDataIndex ~= 0 then 
+                    for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[1][mapsKey].tilesets) do
+                      if tilesetVal.tiles == nil then
+                      else
+                        for tileNum, tileVal in ipairs(tilesetVal.tiles) do
+                          if tileVal.animation == nil then
+                          else
+                            if layerDataIndex == tileVal.id + tilesetVal.firstgid then
+                              table.insert(dataIndexEqualAnimTileIdTable[worldKey][mapsKey].layers[layersKey], layerDataIndex)  -- stores duplicated data tile ids
+                              print("anim duplicate", tileVal.id, layerDataIndex)
+                              print("layer data index number " .. layerDataIndex .. " is a duplicate anim tile in data")
+                            end 
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+  
+  
+function tiledToLoveT.browseDuplicateTilesInData()
+  for woK, woV in ipairs(dataIndexEqualAnimTileIdTable) do
+    for maK, maV in ipairs(woV) do
+      print("maps " .. maK)
+      for laK, laV in ipairs(maV.layers) do
+        print("layer num " .. laK, laV)
+        for datK, datV in ipairs(laV) do
+          print("data v " .. datV)
+        end
+      end
+    end
+  end
+end
+
   
   function tiledToLoveT.updateAnims(dt)
   for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do    
@@ -200,7 +263,20 @@ function drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, l
             if layerDataIndex >= tilesetVal.firstgid and 
             layerDataIndex <= tilesetVal.firstgid + tilesetVal.tilecount - 1 then 
               -- draw tile layers
-                love.graphics.draw(tilesetsImagesList[1][mapsKey][tileKey].tileImg, quadListT[1][mapsKey][layerDataIndex], xx + worldX, yy + worldY) 
+              if dataIndexEqualAnimTileIdTable[1][mapsKey] == nil then
+              else
+                --print(dataIndexEqualAnimTileIdTable[1][mapsKey].layers[layersKey])
+                for i, j in ipairs(dataIndexEqualAnimTileIdTable[1][mapsKey].layers[layersKey]) do
+                  print(j, layerDataIndex)
+                  if j == layerDataIndex then
+                    love.graphics.draw(tilesetsImagesList[1][mapsKey][tileKey].tileImg, quadListT[1][mapsKey][layerDataIndex], xx + worldX, yy + worldY) 
+                  else
+                    --love.graphics.draw(tilesetsImagesList[1][mapsKey][tileKey].tileImg, quadListT[1][mapsKey][layerDataIndex], xx + worldX, yy + worldY) 
+                  end
+                end
+              end
+              
+
               for tileNum, tileVal in ipairs(tilesetVal.tiles) do
                 if tileVal.objectGroup == nil then
                 else
