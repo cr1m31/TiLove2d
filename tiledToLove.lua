@@ -121,69 +121,6 @@ end
       end
     end
   end
-  -- mark or tag tiles that are part of an animation sequence
-  local dataIndexEqualAnimTileIdTable = nil -- will contain tagged tiles that are duplicated in data and tileset animated tiles
-  function tiledToLoveT.compareDataAndTilesToTagDuplicateAnims()
-    dataIndexEqualAnimTileIdTable = {}
-    for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do 
-      dataIndexEqualAnimTileIdTable[worldKey] = {}
-      for mapsKey, mapsVal in pairs(TILESETSIMPORTEDFROMMAIN[1]) do
-        dataIndexEqualAnimTileIdTable[worldKey][mapsKey] = {}
-        dataIndexEqualAnimTileIdTable[worldKey][mapsKey].layers = {}
-        if TILESETSIMPORTEDFROMMAIN[1][mapsKey] == nil then
-      else
-        for layersKey = 1, #TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers do
-          
-          dataIndexEqualAnimTileIdTable[worldKey][mapsKey].layers[layersKey] = {}
-          
-          
-            local layerValue = TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers[layersKey] 
-            if layerValue.type == "tilelayer" then
-              for y = 0, layerValue.height - 1 do
-                for x = 0 , layerValue.width - 1 do
-                  local index = x + (y * layerValue.width) + 1 
-                  local layerDataIndex = layerValue.data[index]
-                  if layerDataIndex ~= 0 then 
-                    for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[1][mapsKey].tilesets) do
-                      if tilesetVal.tiles == nil then
-                      else
-                        for tileNum, tileVal in ipairs(tilesetVal.tiles) do
-                          if tileVal.animation == nil then
-                          else
-                            if layerDataIndex == tileVal.id + tilesetVal.firstgid then
-                              table.insert(dataIndexEqualAnimTileIdTable[worldKey][mapsKey].layers[layersKey], layerDataIndex)  -- stores duplicated data tile ids
-                              print("anim duplicate", tileVal.id, layerDataIndex)
-                              print("layer data index number " .. layerDataIndex .. " is a duplicate anim tile in data")
-                            end 
-                          end
-                        end
-                      end
-                    end
-                  end
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-  end
-  
-  
-function tiledToLoveT.browseDuplicateTilesInData()
-  for woK, woV in ipairs(dataIndexEqualAnimTileIdTable) do
-    for maK, maV in ipairs(woV) do
-      print("maps " .. maK)
-      for laK, laV in ipairs(maV.layers) do
-        print("layer num " .. laK, laV)
-        for datK, datV in ipairs(laV) do
-          print("data v " .. datV)
-        end
-      end
-    end
-  end
-end
-
   
   function tiledToLoveT.updateAnims(dt)
   for worldKey, worldVal in ipairs(TILESETSIMPORTEDFROMMAIN) do    
@@ -249,52 +186,41 @@ function drawGroupFolderLayers(worldX, worldY, playerOffsetX, playerOffsetY, map
 end
 
 function drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, layersKey, layerValue)
-  for y = 0, layerValue.height - 1 do
-    for x = 0 , layerValue.width - 1 do
-      local xx = x * TILESETSIMPORTEDFROMMAIN[1][mapsKey].tilewidth + TILESETSIMPORTEDFROMMAIN[1][mapsKey].mapOnWorldPosX + TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers[layersKey].offsetx -- xx = adjust x on map grid, on world pos and layer offset 
-      local yy = y * TILESETSIMPORTEDFROMMAIN[1][mapsKey].tileheight + TILESETSIMPORTEDFROMMAIN[1][mapsKey].mapOnWorldPosY + TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers[layersKey].offsety
-      local index = x + (y * layerValue.width) + 1
-      local layerDataIndex = layerValue.data[index]
-      if layerDataIndex ~= 0 then 
-        -- list tilesets for each layer cause tilesets are parallel to layers lists.
-        for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[1][mapsKey].tilesets) do
-          if tilesetVal.tilecount == nil then
-          else
-            if layerDataIndex >= tilesetVal.firstgid and 
-            layerDataIndex <= tilesetVal.firstgid + tilesetVal.tilecount - 1 then 
-              -- draw tile layers
-              if dataIndexEqualAnimTileIdTable[1][mapsKey] == nil then
-              else
-                --print(dataIndexEqualAnimTileIdTable[1][mapsKey].layers[layersKey])
-                for i, j in ipairs(dataIndexEqualAnimTileIdTable[1][mapsKey].layers[layersKey]) do
-                  print(j, layerDataIndex)
-                  if j == layerDataIndex then
-                    love.graphics.draw(tilesetsImagesList[1][mapsKey][tileKey].tileImg, quadListT[1][mapsKey][layerDataIndex], xx + worldX, yy + worldY) 
+  if type(layerValue) == "table" then
+    for y = 0, layerValue.height - 1 do
+      for x = 0 , layerValue.width - 1 do
+        local xx = x * TILESETSIMPORTEDFROMMAIN[1][mapsKey].tilewidth + TILESETSIMPORTEDFROMMAIN[1][mapsKey].mapOnWorldPosX + TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers[layersKey].offsetx -- xx = adjust x on map grid, on world pos and layer offset 
+        local yy = y * TILESETSIMPORTEDFROMMAIN[1][mapsKey].tileheight + TILESETSIMPORTEDFROMMAIN[1][mapsKey].mapOnWorldPosY + TILESETSIMPORTEDFROMMAIN[1][mapsKey].layers[layersKey].offsety
+        local index = x + (y * layerValue.width) + 1
+        local layerDataIndex = layerValue.data[index]
+        if layerDataIndex ~= 0 then 
+          -- list tilesets for each layer cause tilesets are parallel to layers lists.
+          for tileKey, tilesetVal in ipairs(TILESETSIMPORTEDFROMMAIN[1][mapsKey].tilesets) do
+            if tilesetVal.tilecount == nil then
+            else
+              if layerDataIndex >= tilesetVal.firstgid and 
+              layerDataIndex <= tilesetVal.firstgid + tilesetVal.tilecount - 1 then 
+                -- draw tile layers
+                love.graphics.draw(tilesetsImagesList[1][mapsKey][tileKey].tileImg, quadListT[1][mapsKey][layerDataIndex], xx + worldX, yy + worldY)  
+                for tileNum, tileVal in ipairs(tilesetVal.tiles) do
+                  if tileVal.objectGroup == nil then
                   else
-                    --love.graphics.draw(tilesetsImagesList[1][mapsKey][tileKey].tileImg, quadListT[1][mapsKey][layerDataIndex], xx + worldX, yy + worldY) 
-                  end
-                end
-              end
-              
-
-              for tileNum, tileVal in ipairs(tilesetVal.tiles) do
-                if tileVal.objectGroup == nil then
-                else
-                  -- draw collision test
-                  for tileObjectGroupI, tileObjectGroupVal in ipairs(tileVal.objectGroup.objects) do
-                    -- be careful to add firstgid instead of 1
-                    if tileVal.id + tilesetVal.firstgid == layerDataIndex then
-                      love.graphics.rectangle("line", xx + worldX, yy + worldY, tileObjectGroupVal.width, tileObjectGroupVal.height)
-                      love.graphics.print("img:" .. tilesetVal.name .. "/coll " .. tileVal.id, xx + worldX, yy + worldY - 20)
+                    -- draw collision test
+                    for tileObjectGroupI, tileObjectGroupVal in ipairs(tileVal.objectGroup.objects) do
+                      -- be careful to add firstgid instead of 1
+                      if tileVal.id + tilesetVal.firstgid == layerDataIndex then
+                        love.graphics.rectangle("line", xx + worldX, yy + worldY, tileObjectGroupVal.width, tileObjectGroupVal.height)
+                        love.graphics.print("img:" .. tilesetVal.name .. "/coll " .. tileVal.id, xx + worldX, yy + worldY - 20)
+                      end
                     end
                   end
-                end
-                if tileVal.animation == nil then
-                else
-                  for animFrameI, animFrameVal in ipairs(tileVal.animation) do  
-                    if layerDataIndex == tilesetVal.firstgid + animFrameVal.tileid then -- if the data correspond with tilesets then...
-                      -- draw animations here
-                      love.graphics.draw(tilesetsImagesList[1][mapsKey][tileKey].tileImg, quadListT[1][mapsKey][ tilesetVal.firstgid + tileVal.animation[tileVal.animTimerFloor ].tileid ], xx + worldX + playerOffsetX, yy + worldY + playerOffsetY)
+                  if tileVal.animation == nil then
+                  else
+                    for animFrameI, animFrameVal in ipairs(tileVal.animation) do  
+                      if layerDataIndex == tilesetVal.firstgid + animFrameVal.tileid then -- if the data correspond with tilesets then...
+                        -- draw animations here
+                        love.graphics.draw(tilesetsImagesList[1][mapsKey][tileKey].tileImg, quadListT[1][mapsKey][ tilesetVal.firstgid + tileVal.animation[tileVal.animTimerFloor ].tileid ], xx + worldX + playerOffsetX, yy + worldY + playerOffsetY)
+                      end
                     end
                   end
                 end
@@ -304,7 +230,9 @@ function drawTileLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, l
         end
       end
     end
-  end
+  else 
+    print("not a table", layerValue)
+  end 
 end
 
 function drawObjectGroupLayers(worldX, worldY, playerOffsetX, playerOffsetY, mapsKey, layersKey, layerValue)

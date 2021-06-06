@@ -99,8 +99,6 @@ function prepareTiledToLoveAndInjectWorldDataIntoMapFiles()
   tiledToLoveMod.loadTilesetImages()
   tiledToLoveMod.buildTilesetQuad()
   tiledToLoveMod.declareAnimTimer()
-  tiledToLoveMod.compareDataAndTilesToTagDuplicateAnims()
-  tiledToLoveMod.browseDuplicateTilesInData()
 end
 
 function love.load() 
