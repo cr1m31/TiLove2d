@@ -4,6 +4,10 @@
 This is a Love2d library to import worlds From "Tiled map editor", it is a work in progress.
 You can import ".world" (world.json) file extension and ".lua" map files that are exported by "Tiled map editor" into your "Love2d" projetcts.
 
+Note:
+-----
+Since I'm doing an apprenticeship, i d'ont have the time to work on this library.
+
 Supported imports:
 ------------------
 - World files.
@@ -22,8 +26,6 @@ Future supported imports:
 Deprecated:
 -----------
 The automatic maps button is deprecated.
-
-Since I'm doing an apprenticeship, i d'ont have the time to work on this library.
 
 Install:
 --------
