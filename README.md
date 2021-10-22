@@ -1,5 +1,4 @@
 # TiLove2d_alpha
-----------------
 This is a Love2d library to import worlds From "Tiled map editor", it is a work in progress as an alpha version.
 You can import ".world" (world.json) file extension and ".lua" map files that are exported by "Tiled map editor" into your "Love2d" projetcts.
 
