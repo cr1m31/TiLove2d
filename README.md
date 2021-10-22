@@ -19,6 +19,7 @@ Since I'm doing an apprenticeship, i d'ont have the time to work on this library
 
 ---------------------------------------------------------------------------------
 Install:
-Download the library by clicking on the 
+Download TiLove2d in Github by selecting the "<>Code" tab then click on the "Code" button and choose "Download Zip".
+Then unzip this folder and you can rename 
 
 
