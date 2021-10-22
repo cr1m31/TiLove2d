@@ -46,12 +46,12 @@ TiLove2d directories and structure:
 - LICENSE file: this is the MIT license made by Github for "TiLove2d".
 - README.md file: this is the text you read here.
 
-TiLove2d files:
----------------
+TiLove2d module files:
+----------------------
 - main.lua file: it's calling "TiLove2d" libraries (modules) and also it sets the anti-aliasing off and the window size.
 - mainLinker.lua file: it connects most of the "TiLove2d" libraries (modules).
 - tiledToLove.lua file: it renders (draw) tilesets and animations.
-- UI.lua file: it create and renders ui buttons.
+- UI.lua file: it creates and renders ui buttons.
 - worldAndMapsLoader.lua file: it loads maps listed into lua world files of the "worldData" folder.
 - worldFileSearch.lua file: it creates "TiLove2d" folders, searches for ".world" files and send infos to the ".json" to ".lua" seralizer.
 - worldJsonToLua.lua file: it is the ".world" (".json") file serializer that converts world files into lua files.
