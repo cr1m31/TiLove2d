@@ -51,9 +51,9 @@ TiLove2d files:
 Tutorial:
 ---------
 
-- Open "Tiled map editor" and create a new map, select "Orthographic" orientation, "CSV" for the tile layer format (choose your tileset tiles size according to your tileset images). WARNING !! don't save the map with the default name, write a proper name with no spaces, just letters, underscores and numbers.
+- Open "Tiled map editor" and create a new map, select "Orthographic" orientation, "CSV" for the tile layer format (choose your tileset tiles size according to your tileset images). WARNING !! don't save the map with the default name, write a proper name with no spaces, just letters, underscores and numbers, for example "my_map_01.tmx", and not "default title.tmx" with no spaces !
 - Create a new tileset, (!check the box to include the tileset into the map!) and make sure the tile size is the same as your map tiles. (You can create maps with different tile size but the tileset images need to match for each map an layers).
 - Now create a world file to contain (point to) a map. Click on "world" tab then, "new world", name it and save it into your project, into the "tiledFiles" folder.
 - Choose a map into "Tiled map editor" by selecting some map tab.
-- Export the selected map as a lua file, into the "lua_maps" folder of your project by clicking on "File" then "export as" and choose the "lua_maps" folder into your project and name the map file as you want (no need to set the file extension .lua).
+- Export the selected map as a lua file, into the "lua_maps" folder of your project by clicking on "File" then "export as" and choose the "lua_maps" folder into your project and let the map name as it is, don't change it (make sure that you saved your Tiled map with a correct name, for example "my_map_01.tmx"), the lua map will have the same name "my_map_01.lua" but with the ".lua" extension.
 - Click on the world tool in the toolbar and click on the green button "add selected map" and choose the world where the map will be.
