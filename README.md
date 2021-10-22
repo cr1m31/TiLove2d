@@ -78,8 +78,8 @@ Once your project is ready with world and map files saved from "Tiled map editor
 - 
 Ingame controls:
 
-Press the keys listed below:
+Press "Escape" key to getting back to the menu.
 
 Camera movement =
 
-"a" for left, "d" for rignt, "w" for up and "s" for down.
+Press "a" for left, "d" for rignt, "w" for up and "s" for down.
