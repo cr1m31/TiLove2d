@@ -17,6 +17,10 @@ Future supported imports:
 -------------------------
 - Groups (need to fix)
 
+Deprecated:
+-----------
+The automatic maps button is deprecated.
+
 Since I'm doing an apprenticeship, i d'ont have the time to work on this library.
 
 Install:
@@ -48,8 +52,8 @@ TiLove2d files:
 - worldFileSearch.lua file: it creates "TiLove2d" folders, searches for ".world" files and send infos to the ".json" to ".lua" seralizer.
 - worldJsonToLua.lua file: it is the ".world" (".json") file serializer that converts world files into lua files.
 
-Tutorial:
----------
+Tiled Tutorial:
+---------------
 Tiled map editor:
 
 You can check the "Tiled map editor" documentation here: 
@@ -63,3 +67,14 @@ https://doc.mapeditor.org/en/stable/manual/introduction/
 - Save the map and export the selected map as a lua file, into the "lua_maps" folder of your project by clicking on "File" then "export as" or "Ctrl+Shift+E" keys and choose the "lua_maps" folder into your project and let the map name as it is, DON'T CHANGE it (make sure that you saved your Tiled map with a correct name, for example "my_map_01.tmx"), the lua map will have the same name "my_map_01.lua" but with the ".lua" extension.
 - Click on the world tool in the toolbar and click on the green button "add selected map" and choose the world where the map will be.
 - Save the world so that it points to the corresponding maps that belongs to this world, click on the world menu then choose save world and save the world that shows up into the menu. Now your map is linked to this world, you only need to save world files each time you add new maps into it to update the world file. (World files need to be saved into the "tiledFiles" folder of your project).
+
+TiLove2d Tutorial:
+------------------
+Once your project is ready with world and map files saved from "Tiled map editor" into your project folder as explained into the "TiLove2d directories and structure" and "Tiled Tutorial" sections above, you can load "TiLove2d" with your favourite Love2d interpreter (ZeroBrane or Visual Studio Code...).
+- Launch TiLove2d and you will be directly into the world menu, by default, the first world will be selected but you can choose the world with the buttons on the left (there's as many buttons as worlds). You can see all maps of the selected world, listed on the center of the Love2d window.
+- Press escape key to open TiLove2d's game menu (you can press escape key when you are ingame to open the game menu).
+- Press on resume game when your'e into the game menu to launch the game render. (Escape key to open the game menu again).
+- In the game menu, you can click on "Exit Game" to quit or on "World editor" to go back to the world selection menu.
+Ingame controls:
+Press the keys listed below:
+Camera movement = "a" for left, "d" for rignt, "w" for up and "s" for down.
