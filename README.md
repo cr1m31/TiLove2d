@@ -50,7 +50,7 @@ TiLove2d files:
 
 Tutorial:
 ---------
-
+Tiled map editor:
 - Open "Tiled map editor" and create a new map, select "Orthographic" orientation, "CSV" for the tile layer format (choose your tileset tiles size according to your tileset images). WARNING !! don't save the map with the default name, write a proper name with no spaces, just letters, underscores and numbers, for example "my_map_01.tmx", and not "default title.tmx" with spaces! (You can save Tiled ".tmx" map files into the "tiledFiles" folder of your project if you wish to work in this directory with "Tiled map editor".
 - Create a new tileset, (!check the box to include the tileset into the map!) and make sure the tile size is the same as your map tiles. (You can create maps with different tile size but the tileset images need to match for each map an layers).
 - Now create a world file to contain (point to) a map. Click on "world" tab then, "new world", name it and save it into your project, into the "tiledFiles" folder. (Name the file correctly with only letters, underscores and numbers).
