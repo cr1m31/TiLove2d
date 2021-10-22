@@ -74,8 +74,9 @@ Once your project is ready with world and map files saved from "Tiled map editor
 - Launch TiLove2d and you will be directly into the world menu, by default, the first world will be selected but you can choose the world with the buttons on the left (there's as many buttons as worlds). You can see all maps of the selected world, listed on the center of the Love2d window.
 - Press escape key to open TiLove2d's game menu (you can press escape key when you are ingame to open the game menu).
 - Press on resume game when your'e into the game menu to launch the game render. (Escape key to open the game menu again).
-- In the game menu, you can click on "Exit Game" to quit or on "World editor" to go back to the world selection menu.
-- 
+- In the game menu, you can click on "Exit Game" to quit 
+- Or click on "World editor" to go back to the world selection menu.
+
 Ingame controls:
 
 Press "Escape" key to open the menu.
