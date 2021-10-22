@@ -30,7 +30,7 @@ The automatic maps button is deprecated.
 Install:
 --------
 - Download "TiLove2d" in Github by selecting the "<>Code" tab then click on the "Code" button and choose "Download Zip".
-- Then unzip (extract) the archive here and you have the "TiLove2d_alpha-master" folder.
+- Then unzip (extract) the archive here and you have the "TiLove2d-master" folder.
 - Rename this extracted folder as your project name (the folder should contain a "main.lua" file).
 - Now you can use your favourite "Love2d" interpreter as "ZeroBrane or Visual Studio Code..." to lauch "TiLove2d" with its "main.lua" file.
 
