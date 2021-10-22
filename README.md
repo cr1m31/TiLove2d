@@ -78,7 +78,7 @@ Once your project is ready with world and map files saved from "Tiled map editor
 - 
 Ingame controls:
 
-Press "Escape" key to getting back to the menu.
+Press "Escape" key to open the menu.
 
 Camera movement =
 
