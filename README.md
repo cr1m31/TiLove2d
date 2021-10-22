@@ -75,6 +75,11 @@ Once your project is ready with world and map files saved from "Tiled map editor
 - Press escape key to open TiLove2d's game menu (you can press escape key when you are ingame to open the game menu).
 - Press on resume game when your'e into the game menu to launch the game render. (Escape key to open the game menu again).
 - In the game menu, you can click on "Exit Game" to quit or on "World editor" to go back to the world selection menu.
+- 
 Ingame controls:
+
 Press the keys listed below:
-Camera movement = "a" for left, "d" for rignt, "w" for up and "s" for down.
+
+Camera movement =
+
+"a" for left, "d" for rignt, "w" for up and "s" for down.
