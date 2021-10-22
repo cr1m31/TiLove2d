@@ -19,5 +19,6 @@ Since I'm doing an apprenticeship, i d'ont have the time to work on this library
 
 ---------------------------------------------------------------------------------
 Install:
+Download the library by clicking on the 
 
 
