@@ -1,8 +1,10 @@
 # TiLove2d_alpha
+----------------
 This is a Love2d library to import worlds From "Tiled map editor", it is a work in progress as an alpha version.
 You can import ".world" (world.json) file extension and ".lua" map files that are exported by "Tiled map editor" into your "Love2d" projetcts.
-------------------
+
 Supported imports:
+------------------
 - World files.
 - Map files (lua format).
   - Tilesets.
@@ -13,17 +15,20 @@ Supported imports:
   - Layers (as many layers in each map)/(data maps)
 
 Future supported imports:
+-------------------------
 - Groups (need to fix)
-----------------------
+
 Since I'm doing an apprenticeship, i d'ont have the time to work on this library.
----------------------------------------------------------------------------------
+
 Install:
+--------
 -Download "TiLove2d" in Github by selecting the "<>Code" tab then click on the "Code" button and choose "Download Zip".
 -Then unzip (extract) the archive here and you have the "TiLove2d_alpha-master" folder.
 -Rename this extracted folder as your project name (the folder should contain a "main.lua" file).
 -Now you can use your favourite "Love2d" interpreter as "ZeroBrane or Visual Studio Code..." to lauch "TiLove2d" with its "main.lua" file.
-------------------------------------------------------------------------------------------------------------------------------------------
+
 TiLove2d directories and structure:
+-----------------------------------
 -images folder: put your images and tilesheet images here, you can add any subfolders for various image categories.
   -UI folder: it contains the TiLove2d's button images, let it there as it is.
 -lua_maps folder: place your lua maps here (lua maps exported from "Tiled map editor" as ".lua" format).
@@ -33,8 +38,9 @@ TiLove2d directories and structure:
 -worldData folder: this is where TiLove2d saves your ".world" files into ".lua" format.
 -LICENSE file: this is the MIT license made by Github for "TiLove2d".
 -README.md file: this is the text you read here.
-------------------------------------------------
+
 TiLove2d files:
+---------------
 -main.lua file: it's calling "TiLove2d" libraries (modules) and also it sets the anti-aliasing off and the window size.
 -mainLinker.lua file: it connects most of the "TiLove2d" libraries (modules).
 -tiledToLove.lua file: it renders (draw) tilesets and animations.
@@ -42,7 +48,8 @@ TiLove2d files:
 -worldAndMapsLoader.lua file: it loads maps listed into lua world files of the "worldData" folder.
 -worldFileSearch.lua file: it creates "TiLove2d" folders, searches for ".world" files and send infos to the ".json" to ".lua" seralizer.
 -worldJsonToLua.lua file: it is the ".world" (".json") file serializer that converts world files into lua files.
-----------------------------------------------------------------------------------------------------------------
+
 Tutorial:
+---------
 
 
